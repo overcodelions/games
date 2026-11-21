@@ -280,21 +280,24 @@ log = [('$', 'Glidegang → Build All', '#8784a6'), ('', 'GLIDEGANG BUILD OK', '
 logs = ''.join(f'<span style="display: flex; gap: 10px"><i style="font-style: normal; color: #8784a6; width: 10px">{p}</i><span style="color: {c}">{t}</span></span>' for p, t, c in log)
 
 REGISTRY = 'https://github.com/overcodelions/overcli-flow-registry/blob/main/flows/game-from-spec.yaml'
-FSTEPS = [('01', 'Plan', 'Architect', 'Claude Fable 5.2', 'Reads CLAUDE.md and the spec, picks the milestones and plans them.', 'plan.md', ''),
-          ('02', 'Build', 'Builder', 'Claude Sonnet 5.5', 'Writes the milestones in Unity, compiling in batch mode as it goes.', 'diff', ''),
-          ('03', 'Verify', 'Lead', 'Claude Opus 5.5', 'Compiles, runs Build All and every test, lets a bot play, checks the screenshots.', 'verify.md', 'gate'),
-          ('04', 'Fix', 'Builder', 'Claude Sonnet 5.5', 'One pass on exactly what verify blocked — or “No changes required.”', 'diff', 'fix'),
+FSTEPS = [('01', 'Plan', 'Architect', 'Claude Fable 5.2', 'Reads the spec and the build log, picks the next milestones and plans them.', 'plan.md', ''),
+          ('02', 'Build', 'Builder', 'Claude Sonnet 5.5', 'Writes the milestones in Unity.', 'diff', ''),
+          ('03', 'Fix', 'Builder', 'Claude Sonnet 5.5', 'Compiles, runs the tests, fixes what fails — or what verify sent back.', 'diff', 'fix'),
+          ('04', 'Verify', 'Lead', 'Claude Opus 5.5', 'Batch-mode compile, Build All and every test, a bot plays, screenshots checked.', 'verify.md', 'gate'),
           ('05', 'Tests', 'Builder', 'Claude Sonnet 5.5', 'Extends the tests for what was just built, and runs them.', 'tests_report.md', ''),
-          ('06', 'Log', 'Lead', 'Claude Opus 5.5', 'Writes spec/BUILD_LOG.md: what passed, and what nobody has tried yet.', 'BUILD_LOG.md', '')]
-fsteps = ''.join(f'<li class="fstep {k}"><span class="fn">{n}</span><b>{t}</b><span class="who">{w} · {m}</span><p>{d}</p><code>→ {o}</code>' + ('<span class="fgate">approval gate</span>' if k == 'gate' else '') + '</li>' for n, t, w, m, d, o, k in FSTEPS)
+          ('06', 'Polish', 'Architect', 'Claude Fable 5.2', 'A clean-up that must not change how it plays. One of us checks in first.', 'polish_report.md', 'human'),
+          ('07', 'Log', 'Lead', 'Claude Opus 5.5', 'Updates spec/BUILD_LOG.md: what passed, and what nobody has tried.', 'BUILD_LOG.md', ''),
+          ('08', 'Next', 'Lead', 'Claude Opus 5.5', 'All the milestones done? If not, round again for the next batch.', 'next.md', 'outer')]
+BADGE = {'gate': '<span class="fgate">↺ back to Fix until approved</span>', 'outer': '<span class="fgate">↺ back to Plan until done</span>', 'human': '<span class="fgate human">✋ we check in first</span>'}
+fsteps = ''.join(f'<li class="fstep {k}"><span class="fn">{n}</span><b>{t}</b><span class="who">{w} · {m}</span><p>{d}</p><code>→ {o}</code>' + BADGE.get(k, '') + '</li>' for n, t, w, m, d, o, k in FSTEPS)
 RUNS = [('crater', 'Crater', 'Plan → Build → Review → Tests → Polish', 'One overnight run. Review sent the build back once; then tests, then a polish pass.'),
         ('puttnik', 'Puttnik', 'Plan → Build → Verify', 'One unattended run. Verify sent the build back once, then approved it.'),
         ('glidegang', 'Glidegang', 'One long session', 'All twelve milestones in a single unattended session, before the flow existed.')]
 runs = ''.join(f'<li class="{g}"><img src="../assets/{ICON[g]}" alt="" /><span><b>{n}</b><code>{f}</code><span>{t}</span></span></li>' for g, n, f, t in RUNS)
 flow_sec = f'''    <section class="sec" id="flow"><div class="wrap">
-      <div class="head"><div><p class="eyebrow">[ <b>the flow</b> ] · built with overcli flows</p><h2>Six steps, <em>three models.</em></h2></div><p class="lede">A flow is a recipe overcli runs on its own: each step gets its own model, its own tools and the work of the steps before it. This is the one our games are built with, written down from the runs that built them.</p></div>
+      <div class="head"><div><p class="eyebrow">[ <b>the flow</b> ] · built with overcli flows</p><h2>Eight steps, <em>two loops.</em></h2></div><p class="lede">A flow is a recipe overcli runs on its own: each step gets its own model, its own tools and the work of the steps before it. This is the one our games are built with: it goes round a few milestones at a time, fixing and re-checking until the tests pass, and stops for one of us before the polish.</p></div>
       <ol class="flowmap">{fsteps}<li class="fstep you"><span class="fn">→</span><b>We play it</b><span class="who">Lionel &amp; Owen · on an iPhone</span><p>Tilt, touch, two phones on the Wi-Fi, how it feels. Then the next spec change.</p></li></ol>
-      <div class="flowfoot"><p class="meta">Runs unattended: every step is local, nothing is committed or pushed, and the verify step goes forward to one fix pass instead of looping back to build.</p><a class="btn btn-line" href="{REGISTRY}" target="_blank" rel="noopener">Get the flow ↗</a></div>
+      <div class="flowfoot"><p class="meta">Runs on its own between check-ins: every step is local, nothing is committed or pushed, and a loop that runs out of rounds stops and waits for us instead of carrying on.</p><a class="btn btn-line" href="{REGISTRY}" target="_blank" rel="noopener">Get the flow ↗</a></div>
       <ul class="runs">{runs}</ul>
       <p class="meta" style="margin-top: 14px">In overcli: Settings → Flows → the public registry → <b style="color: var(--ink)">Build a game from a spec</b>.</p>
     </div></section>
