@@ -199,7 +199,7 @@ home = f'''    <section class="hero"><div class="wrap">
               ('Play together', 'Game Center online, pass-and-play on one phone, or a whole room on the same Wi-Fi.'),
               ('Bots that play fair', 'Easy, Normal and Hard bots, tuned against a stand-in new player so a first race is winnable and a hard one isn’t.')])}
     </div></section>
-{band('', 'Every game here is specced, built and tested with overcli, the agent desktop app we make: long build sessions in Unity, with every test run before we ever pick up a phone.')}
+{band('', 'Every game here is built with overcli flows, in the agent desktop app we make: one model plans each milestone, another builds it, and a third checks it with Unity’s own tests before we ever pick up a phone.')}
 '''
 page('', 'Codelions Games Lab — small games, big physics', 'Crater, Puttnik and Glidegang: three iPhone games a father and son are building. Built with overcli.', '', '', home)
 
@@ -278,22 +278,43 @@ page('glidegang', 'Glidegang — eight gliders, one canyon', 'A chaotic glider r
 log = [('$', 'Glidegang → Build All', '#8784a6'), ('', 'GLIDEGANG BUILD OK', '#8fe56e'), ('', 'GLIDEGANG TESTS OK (60 passed)', '#8fe56e'), ('', 'bot finish · every course, no more than two crashes', '#8fe56e'),
        ('', 'played in batch mode · menu, hangar, Course Lab, five races, Ring Rush, Time Trial', '#b7b5d1'), ('', 'no game errors logged', '#b7b5d1'), ('!', 'not tried · a real iPhone, two phones on Wi-Fi, Game Center', '#ffd25c')]
 logs = ''.join(f'<span style="display: flex; gap: 10px"><i style="font-style: normal; color: #8784a6; width: 10px">{p}</i><span style="color: {c}">{t}</span></span>' for p, t, c in log)
+
+REGISTRY = 'https://github.com/overcodelions/overcli-flow-registry/blob/main/flows/game-from-spec.yaml'
+FSTEPS = [('01', 'Plan', 'Architect', 'Claude Fable 5.2', 'Reads CLAUDE.md and the spec, picks the milestones and plans them.', 'plan.md', ''),
+          ('02', 'Build', 'Builder', 'Claude Sonnet 5.5', 'Writes the milestones in Unity, compiling in batch mode as it goes.', 'diff', ''),
+          ('03', 'Verify', 'Lead', 'Claude Opus 5.5', 'Compiles, runs Build All and every test, lets a bot play, checks the screenshots.', 'verify.md', 'gate'),
+          ('04', 'Fix', 'Builder', 'Claude Sonnet 5.5', 'One pass on exactly what verify blocked — or “No changes required.”', 'diff', 'fix'),
+          ('05', 'Tests', 'Builder', 'Claude Sonnet 5.5', 'Extends the tests for what was just built, and runs them.', 'tests_report.md', ''),
+          ('06', 'Log', 'Lead', 'Claude Opus 5.5', 'Writes spec/BUILD_LOG.md: what passed, and what nobody has tried yet.', 'BUILD_LOG.md', '')]
+fsteps = ''.join(f'<li class="fstep {k}"><span class="fn">{n}</span><b>{t}</b><span class="who">{w} · {m}</span><p>{d}</p><code>→ {o}</code>' + ('<span class="fgate">approval gate</span>' if k == 'gate' else '') + '</li>' for n, t, w, m, d, o, k in FSTEPS)
+RUNS = [('crater', 'Crater', 'Plan → Build → Review → Tests → Polish', 'One overnight run. Review sent the build back once; then tests, then a polish pass.'),
+        ('puttnik', 'Puttnik', 'Plan → Build → Verify', 'One unattended run. Verify sent the build back once, then approved it.'),
+        ('glidegang', 'Glidegang', 'One long session', 'All twelve milestones in a single unattended session, before the flow existed.')]
+runs = ''.join(f'<li class="{g}"><img src="../assets/{ICON[g]}" alt="" /><span><b>{n}</b><code>{f}</code><span>{t}</span></span></li>' for g, n, f, t in RUNS)
+flow_sec = f'''    <section class="sec" id="flow"><div class="wrap">
+      <div class="head"><div><p class="eyebrow">[ <b>the flow</b> ] · built with overcli flows</p><h2>Six steps, <em>three models.</em></h2></div><p class="lede">A flow is a recipe overcli runs on its own: each step gets its own model, its own tools and the work of the steps before it. This is the one our games are built with, written down from the runs that built them.</p></div>
+      <ol class="flowmap">{fsteps}<li class="fstep you"><span class="fn">→</span><b>We play it</b><span class="who">Lionel &amp; Owen · on an iPhone</span><p>Tilt, touch, two phones on the Wi-Fi, how it feels. Then the next spec change.</p></li></ol>
+      <div class="flowfoot"><p class="meta">Runs unattended: every step is local, nothing is committed or pushed, and the verify step goes forward to one fix pass instead of looping back to build.</p><a class="btn btn-line" href="{REGISTRY}" target="_blank" rel="noopener">Get the flow ↗</a></div>
+      <ul class="runs">{runs}</ul>
+      <p class="meta" style="margin-top: 14px">In overcli: Settings → Flows → the public registry → <b style="color: var(--ink)">Build a game from a spec</b>.</p>
+    </div></section>
+'''
 how = f'''    <section class="hero"><div class="wrap">
       <div class="hero-copy"><p class="eyebrow">[ <b>how we build</b> ]</p><h1>A father, a son, <em>and overcli.</em></h1>
-        <p class="lede">We design the games together. overcli — the agent desktop app we also make — runs the long build sessions, and Unity’s own tests say whether they worked. Then we pick up a phone and play.</p>
+        <p class="lede">We design the games together. overcli — the agent desktop app we also make — builds them with a flow: one model plans, another builds, a third checks the work with Unity’s own tests. <a href="#flow" style="color: var(--ink)">See the flow ↓</a> Then we pick up a phone and play.</p>
         <div class="btns"><a class="btn btn-ink" href="{OVERCLI}" target="_blank" rel="noopener">Meet overcli ↗</a><a class="btn btn-line" href="../">All the games</a></div></div>
       <div class="phone" style="--g: #ffb23d"><span class="scene" style="aspect-ratio: auto; background: #0b0d1c; padding: clamp(18px, 2.4vw, 30px); display: flex; flex-direction: column; gap: 9px; font: 400 clamp(11px, 1vw, 13.5px)/1.5 'Geist Mono', monospace">{logs}</span></div>
     </div></section>
     <section class="sec"><div class="wrap">
       <div class="head"><div><p class="eyebrow">[ <b>the loop</b> ]</p><h2>Spec, build, <em>test, play.</em></h2></div><p class="lede">The agent does the long, careful work. The parts only people can judge — how it feels in your hands — stay ours.</p></div>
       {feats([('The spec', 'Every game starts as one document: its pillars, rules, tuning numbers and milestones. It’s the source of truth for us and for the agent.'),
-              ('Long build sessions', 'An agent in overcli works through the milestones on its own, compiling in Unity’s batch mode and reading the log for errors as it goes.'),
+              ('Built by flows', 'An overcli flow works through the milestones on its own: one model plans, another builds, a third compiles in Unity’s batch mode and runs the tests.'),
               ('Tested before we play', 'A Build All menu runs every test. Bots fly every course and putt every hole; the screenshots are checked.'),
               ('Then we play', 'Tilt, touch, two phones on the Wi-Fi, how it feels — the parts no test can judge. That’s our job.'),
               ('One family', 'Each game copies what it needs from the last one — terrain, share codes, the Lab pattern — and never edits its siblings.'),
               ('Honest notes', 'Every session ends with a build log: what was built, what passed, and what nobody has tried yet.')])}
     </div></section>
-{band('../', 'overcli puts Claude Code, Codex and the other agent CLIs in one window, then lets them work in long sessions, review each other and run in loops. It’s how these games get built — and it’s free and open source.')}
+{flow_sec}{band('../', 'overcli puts Claude Code, Codex and the other agent CLIs in one window, then lets them work in long sessions, review each other and run in loops. It’s how these games get built — and it’s free and open source.')}
 '''
 page('how-we-build', 'How we build — Codelions Games Lab', 'How a father and son build iPhone games with a spec, Unity’s tests and overcli.', '', 'how-we-build/', how)
 print('pages written')
