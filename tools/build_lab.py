@@ -294,9 +294,58 @@ RUNS = [('crater', 'Crater', 'Plan → Build → Review → Tests → Polish', '
         ('puttnik', 'Puttnik', 'Plan → Build → Verify', 'One unattended run. Verify sent the build back once, then approved it.'),
         ('glidegang', 'Glidegang', 'One long session', 'All twelve milestones in a single unattended session, before the flow existed.')]
 runs = ''.join(f'<li class="{g}"><img src="../assets/{ICON[g]}" alt="" /><span><b>{n}</b><code>{f}</code><span>{t}</span></span></li>' for g, n, f, t in RUNS)
+
+def flow_svg():
+    W, nw, y, h = 1240, 116, 118, 70
+    nodes = [(n, t, m.replace('Claude ', ''), k) for n, t, w, m, d, o, k in FSTEPS] + [('→', 'We play it', 'Lionel & Owen', 'you')]
+    gap = (W - 20 - len(nodes) * nw) / (len(nodes) - 1)
+    X = [10 + i * (nw + gap) for i in range(len(nodes))]
+    cx = lambda i: X[i] + nw / 2
+    col = {'gate': '#ffd25c', 'outer': '#ffd25c', 'human': '#67e4f7', 'you': '#ffb23d', 'fix': 'rgba(255,255,255,.28)'}
+    out = ['<svg class="flowsvg" viewBox="0 0 %d 320" role="img" aria-label="The flow: plan, build, fix, verify, tests, polish, log, next. Verify loops back to fix until it approves; next loops back to plan until every milestone is done; we check in before polish; then we play it.">' % W,
+           '<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="rgba(255,255,255,.45)"/></marker>'
+           '<marker id="ay" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#ffd25c"/></marker>'
+           '<linearGradient id="og" x1="0" x2="1"><stop offset="0" stop-color="#ffd25c"/><stop offset="1" stop-color="#ff8a3d"/></linearGradient></defs>']
+    # loops first, under the nodes
+    vi, fi, ni, pi, li = 3, 2, 7, 0, 5
+    inner = f'M{cx(vi)-14:.0f} {y} C{cx(vi)-14:.0f} {y-92}, {cx(fi)+14:.0f} {y-92}, {cx(fi)+14:.0f} {y}'
+    outer = f'M{cx(ni):.0f} {y+h} C{cx(ni):.0f} {y+h+120}, {cx(pi):.0f} {y+h+120}, {cx(pi):.0f} {y+h}'
+    out.append(f'<path class="arc" d="{inner}" fill="none" stroke="#ffd25c" stroke-width="2.2" marker-end="url(#ay)"/>')
+    out.append(f'<path class="arc slow" d="{outer}" fill="none" stroke="url(#og)" stroke-width="2.2" marker-end="url(#ay)"/>')
+    out.append(f'<circle r="5" fill="#ffd25c"><animateMotion dur="2.6s" repeatCount="indefinite" path="{inner}"/></circle>')
+    out.append(f'<circle r="5.5" fill="#ff8a3d"><animateMotion dur="7s" repeatCount="indefinite" path="{outer}"/></circle>')
+    mid = (cx(vi) + cx(fi)) / 2
+    out.append(f'<text class="lbl" x="{mid:.0f}" y="{y-78}" text-anchor="middle" fill="#ffd25c">↺ back to Fix until verify approves</text>')
+    out.append(f'<text class="lbl" x="{(cx(ni)+cx(pi))/2:.0f}" y="{y+h+106}" text-anchor="middle" fill="#ffb27a">↺ round again for the next batch of milestones, until the spec is done</text>')
+    # forward arrows
+    for i in range(len(nodes) - 1):
+        x1, x2 = X[i] + nw + 2, X[i + 1] - 3
+        if i == li - 1:
+            out.append(f'<line x1="{x1:.0f}" y1="{y+h/2}" x2="{x2:.0f}" y2="{y+h/2}" stroke="#67e4f7" stroke-width="2" stroke-dasharray="3 4" marker-end="url(#ah)"/>')
+        elif i == ni:
+            out.append(f'<line x1="{x1:.0f}" y1="{y+h/2}" x2="{x2:.0f}" y2="{y+h/2}" stroke="#8fe56e" stroke-width="2" marker-end="url(#ah)"/><text class="tiny" x="{(x1+x2)/2:.0f}" y="{y-8}" text-anchor="middle" fill="#8fe56e">done ✓</text>')
+        else:
+            out.append(f'<line x1="{x1:.0f}" y1="{y+h/2}" x2="{x2:.0f}" y2="{y+h/2}" stroke="rgba(255,255,255,.3)" stroke-width="2" marker-end="url(#ah)"/>')
+    # check-in marker on polish
+    out.append(f'<g><rect x="{cx(li)-78:.0f}" y="{y-44}" width="156" height="24" rx="12" fill="rgba(103,228,247,.14)" stroke="rgba(103,228,247,.5)"/><text class="tiny" x="{cx(li):.0f}" y="{y-28}" text-anchor="middle" fill="#67e4f7">✋ we check in first</text><line x1="{cx(li):.0f}" y1="{y-20}" x2="{cx(li):.0f}" y2="{y-2}" stroke="#67e4f7" stroke-width="1.5" stroke-dasharray="2 3"/></g>')
+    for i, (n, t, m, k) in enumerate(nodes):
+        st = col.get(k, 'rgba(255,255,255,.14)')
+        fill = 'url(#youg)' if k == 'you' else '#11142b'
+        dash = ' stroke-dasharray="5 4"' if k == 'fix' else ''
+        bg = 'rgba(255,178,61,.13)' if k == 'you' else '#11142b'
+        glow = {'gate': '#ffd25c', 'outer': '#ffd25c', 'human': '#67e4f7', 'you': '#ffb23d'}.get(k, '#a9b3ff')
+        out.append(f'<rect class="node" style="--i:{i};--c:{glow};--bg:{bg}" x="{X[i]:.0f}" y="{y}" width="{nw}" height="{h}" rx="14" fill="{bg}" stroke="{st}" stroke-width="1.4"{dash}/>'
+                   f'<text class="num" x="{X[i]+12:.0f}" y="{y+19}" fill="#ffd25c">{n}</text>'
+                   f'<text class="nm" x="{X[i]+12:.0f}" y="{y+42}" fill="#f3f1ff">{t}</text>'
+                   f'<text class="mdl" x="{X[i]+12:.0f}" y="{y+59}" fill="#8f8cad">{m}</text>')
+    run = f'M{cx(0):.0f} {y+h/2} L{cx(len(nodes)-1):.0f} {y+h/2}'
+    out.append(f'<circle class="token" r="6" fill="#fff"><animateMotion dur="8.1s" repeatCount="indefinite" calcMode="linear" keyTimes="0;0.889;1" keyPoints="0;1;1" path="{run}"/></circle>')
+    out.append('</svg>')
+    return ''.join(out)
+FLOWSVG = flow_svg()
 flow_sec = f'''    <section class="sec" id="flow"><div class="wrap">
       <div class="head"><div><p class="eyebrow">[ <b>the flow</b> ] · built with overcli flows</p><h2>Eight steps, <em>two loops.</em></h2></div><p class="lede">A flow is a recipe overcli runs on its own: each step gets its own model, its own tools and the work of the steps before it. This is the one our games are built with: it goes round a few milestones at a time, fixing and re-checking until the tests pass, and stops for one of us before the polish.</p></div>
-      <ol class="flowmap">{fsteps}<li class="fstep you"><span class="fn">→</span><b>We play it</b><span class="who">Lionel &amp; Owen · on an iPhone</span><p>Tilt, touch, two phones on the Wi-Fi, how it feels. Then the next spec change.</p></li></ol>
+      {FLOWSVG}<ol class="flowmap">{fsteps}<li class="fstep you"><span class="fn">→</span><b>We play it</b><span class="who">Lionel &amp; Owen · on an iPhone</span><p>Tilt, touch, two phones on the Wi-Fi, how it feels. Then the next spec change.</p></li></ol>
       <div class="flowfoot"><p class="meta">Runs on its own between check-ins: every step is local, nothing is committed or pushed, and a loop that runs out of rounds stops and waits for us instead of carrying on.</p><a class="btn btn-line" href="{REGISTRY}" target="_blank" rel="noopener">Get the flow ↗</a></div>
       <ul class="runs">{runs}</ul>
       <p class="meta" style="margin-top: 14px">In overcli: Settings → Flows → the public registry → <b style="color: var(--ink)">Build a game from a spec</b>.</p>

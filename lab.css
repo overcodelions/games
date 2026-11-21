@@ -283,9 +283,9 @@ h1 em, h2 em { font-style: normal; background: linear-gradient(95deg, var(--g), 
 @media (prefers-reduced-motion: reduce) { .live i { animation: none; } }
 
 /* ── the flow map ───────────────────────────────────────────────── */
-.flowmap { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 10px; counter-reset: f; }
+.flowmap { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; counter-reset: f; }
 .fstep { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 16px 14px 14px; border-radius: 16px; background: var(--panel); border: 1px solid var(--line); }
-.fstep:not(:last-child)::after { content: ''; position: absolute; top: 28px; right: -11px; width: 12px; height: 2px; background: rgba(255, 255, 255, .22); }
+.fstep:not(:last-child)::after { display: none; content: ''; position: absolute; top: 28px; right: -11px; width: 12px; height: 2px; background: rgba(255, 255, 255, .22); }
 .fstep .fn { font: 500 11px 'Geist Mono', monospace; color: #ffd25c; letter-spacing: .08em; }
 .fstep b { font: 700 20px 'Bricolage Grotesque', sans-serif; letter-spacing: -.01em; }
 .fstep .who { font: 400 11px 'Geist Mono', monospace; color: var(--dim); }
@@ -297,7 +297,7 @@ h1 em, h2 em { font-style: normal; background: linear-gradient(95deg, var(--g), 
 .fstep.outer { border-color: rgba(255, 210, 92, .45); }
 .fstep.human { border-color: rgba(103, 228, 247, .45); }
 .fgate.human { background: rgba(103, 228, 247, .14); color: #67e4f7; }
-@media (max-width: 1400px) { .flowmap { grid-template-columns: repeat(5, minmax(0, 1fr)); } .fstep:nth-child(5)::after { display: none; } }
+
 .fstep.you { background: linear-gradient(160deg, rgba(255, 210, 92, .16), rgba(255, 138, 61, .08)); border-color: rgba(255, 210, 92, .4); }
 .fstep.you .fn { color: var(--ink); }
 .flowfoot { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-top: 18px; }
@@ -310,3 +310,21 @@ h1 em, h2 em { font-style: normal; background: linear-gradient(95deg, var(--g), 
 .runs code { font: 400 11.5px 'Geist Mono', monospace; color: var(--g); }
 @media (max-width: 1040px) { .flowmap { grid-template-columns: repeat(4, minmax(0, 1fr)); } .fstep::after { display: none; } .runs { grid-template-columns: 1fr; } }
 @media (max-width: 720px) { .flowmap { grid-template-columns: 1fr 1fr; } .flowfoot { flex-direction: column; align-items: flex-start; } }
+
+.flowsvg { display: block; width: 100%; height: auto; margin: 6px 0 30px; overflow: visible; }
+.flowsvg .nm { font: 700 18px 'Bricolage Grotesque', sans-serif; }
+.flowsvg .mdl, .flowsvg .num, .flowsvg .tiny { font: 400 11px 'Geist Mono', monospace; }
+.flowsvg .lbl { font: 500 13px 'Geist Mono', monospace; }
+.flowsvg .arc { stroke-dasharray: 7 6; animation: arcflow 1.1s linear infinite; }
+.flowsvg .arc.slow { animation-duration: 2.2s; }
+@keyframes arcflow { to { stroke-dashoffset: -26; } }
+@media (max-width: 720px) { .flowsvg { display: none; } }
+@media (prefers-reduced-motion: reduce) { .flowsvg .arc { animation: none; } .flowsvg circle { display: none; } }
+.flowsvg .node { animation: nodeglow 8.1s infinite; animation-delay: calc(var(--i) * .9s - .45s); }
+@keyframes nodeglow {
+  0% { fill: var(--bg); filter: none; }
+  4%, 9% { fill: #1f2450; filter: drop-shadow(0 0 12px var(--c)); }
+  15%, 100% { fill: var(--bg); filter: none; }
+}
+.flowsvg .token { filter: drop-shadow(0 0 6px #fff); mix-blend-mode: screen; opacity: .85; }
+@media (prefers-reduced-motion: reduce) { .flowsvg .node { animation: none; } }
