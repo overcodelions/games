@@ -328,3 +328,12 @@ h1 em, h2 em { font-style: normal; background: linear-gradient(95deg, var(--g), 
 }
 .flowsvg .token { filter: drop-shadow(0 0 6px #fff); mix-blend-mode: screen; opacity: .85; }
 @media (prefers-reduced-motion: reduce) { .flowsvg .node { animation: none; } }
+.flowsec .head { align-items: end; }
+.runsin { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 22px; align-items: center; margin: 0 0 34px; padding: 24px 28px; border-radius: 22px; border: 1px solid rgba(255, 210, 92, .32); background: linear-gradient(120deg, rgba(255, 210, 92, .11), rgba(255, 138, 61, .05) 45%, rgba(103, 228, 247, .06)); box-shadow: 0 30px 60px -40px rgba(255, 178, 61, .5); }
+.runsin .mk { width: 56px; height: 56px; border-radius: 15px; background: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px -10px rgba(255, 210, 92, .6); }
+.runsin h3 { margin: 0 0 6px; font: 700 24px 'Bricolage Grotesque', sans-serif; letter-spacing: -.01em; }
+.runsin p { margin: 0; color: var(--dim); font-size: 15px; max-width: 720px; }
+.runsin p b { color: var(--ink); }
+.runsin .btns { flex-wrap: nowrap; }
+@media (max-width: 1040px) { .runsin { grid-template-columns: auto minmax(0, 1fr); } .runsin .btns { grid-column: 1 / -1; flex-wrap: wrap; } }
+@media (max-width: 720px) { .runsin { grid-template-columns: 1fr; padding: 20px; } }

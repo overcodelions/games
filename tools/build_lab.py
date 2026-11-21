@@ -343,12 +343,14 @@ def flow_svg():
     out.append('</svg>')
     return ''.join(out)
 FLOWSVG = flow_svg()
-flow_sec = f'''    <section class="sec" id="flow"><div class="wrap">
-      <div class="head"><div><p class="eyebrow">[ <b>the flow</b> ] · built with overcli flows</p><h2>Eight steps, <em>two loops.</em></h2></div><p class="lede">A flow is a recipe overcli runs on its own: each step gets its own model, its own tools and the work of the steps before it. This is the one our games are built with: it goes round a few milestones at a time, fixing and re-checking until the tests pass, and stops for one of us before the polish.</p></div>
-      {FLOWSVG}<ol class="flowmap">{fsteps}<li class="fstep you"><span class="fn">→</span><b>We play it</b><span class="who">Lionel &amp; Owen · on an iPhone</span><p>Tilt, touch, two phones on the Wi-Fi, how it feels. Then the next spec change.</p></li></ol>
-      <div class="flowfoot"><p class="meta">Runs on its own between check-ins: every step is local, nothing is committed or pushed, and a loop that runs out of rounds stops and waits for us instead of carrying on.</p><a class="btn btn-line" href="{REGISTRY}" target="_blank" rel="noopener">Get the flow ↗</a></div>
+flow_sec = f'''    <section class="sec flowsec" id="flow"><div class="wrap">
+      <div class="head"><div><p class="eyebrow">[ <b>the flow</b> ] · built with overcli flows</p><h2>Eight steps, <em>two loops.</em></h2></div><p class="lede">A flow is a recipe overcli runs on its own, each step with its own model and tools. Ours goes round a few milestones at a time until the tests pass.</p></div>
+      {FLOWSVG}
+      <div class="runsin"><span class="mk"><svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke="#0d0f15" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9 L16 16 L9 23"/><path d="M18 23 H24"/></svg></span>
+        <div><p class="eyebrow" style="margin: 0 0 6px">[ <b>runs in overcli</b> ]</p><h3>One click from overcli’s flow library.</h3><p>In overcli, open Settings → Flows, pick <b>Build a game from a spec</b> from the public registry, and point it at a game’s spec. It runs on its own between check-ins: every step stays on your machine, nothing is committed or pushed, and a loop that runs out of rounds stops and waits for you.</p></div>
+        <div class="btns"><a class="btn btn-ink" href="{REGISTRY}" target="_blank" rel="noopener">Get the flow ↗</a><a class="btn btn-line" href="{OVERCLI}" target="_blank" rel="noopener">Meet overcli ↗</a></div></div>
+      <ol class="flowmap">{fsteps}<li class="fstep you"><span class="fn">→</span><b>We play it</b><span class="who">Lionel &amp; Owen · on an iPhone</span><p>Tilt, touch, two phones on the Wi-Fi, how it feels. Then the next spec change.</p></li></ol>
       <ul class="runs">{runs}</ul>
-      <p class="meta" style="margin-top: 14px">In overcli: Settings → Flows → the public registry → <b style="color: var(--ink)">Build a game from a spec</b>.</p>
     </div></section>
 '''
 how = f'''    <section class="hero"><div class="wrap">
