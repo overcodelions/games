@@ -287,7 +287,8 @@ FSTEPS = [('01', 'Plan', 'Architect', 'Claude Fable 5.2', 'Reads the spec and th
           ('05', 'Tests', 'Builder', 'Claude Sonnet 5.5', 'Extends the tests for what was just built, and runs them.', 'tests_report.md', ''),
           ('06', 'Polish', 'Architect', 'Claude Fable 5.2', 'A clean-up that must not change how it plays, re-checked by compiling and testing.', 'polish_report.md', ''),
           ('07', 'Log', 'Lead', 'Claude Opus 5.5', 'Updates spec/BUILD_LOG.md: what passed, and what nobody has tried.', 'BUILD_LOG.md', ''),
-          ('08', 'Next', 'Lead', 'Claude Opus 5.5', 'All the milestones done? If not, round again for the next batch.', 'next.md', 'outer')]
+          ('08', 'Next', 'Lead', 'Claude Opus 5.5', 'All the milestones done? If not, round again for the next batch.', 'next.md', 'outer'),
+          ('09', 'Final review', 'Architect', 'Claude Fable 5.2', 'Once, at the end: the whole run checked against the spec, and a list of what to try first on a phone.', 'FINAL_REVIEW.md', '')]
 BADGE = {'gate': '<span class="fgate">↺ back to Fix until approved</span>', 'outer': '<span class="fgate">↺ back to Plan until done</span>', 'human': '<span class="fgate human">✋ we check in first</span>'}
 fsteps = ''.join(f'<li class="fstep {k}"><span class="fn">{n}</span><b>{t}</b><span class="who">{w} · {m}</span><p>{d}</p><code>→ {o}</code>' + BADGE.get(k, '') + '</li>' for n, t, w, m, d, o, k in FSTEPS)
 RUNS = [('crater', 'Crater', 'Plan → Build → Review → Tests → Polish', 'One overnight run. Review sent the build back once; then tests, then a polish pass.'),
@@ -296,13 +297,13 @@ RUNS = [('crater', 'Crater', 'Plan → Build → Review → Tests → Polish', '
 runs = ''.join(f'<li class="{g}"><img src="../assets/{ICON[g]}" alt="" /><span><b>{n}</b><code>{f}</code><span>{t}</span></span></li>' for g, n, f, t in RUNS)
 
 def flow_svg():
-    W, nw, y, h = 1240, 116, 118, 70
+    W, nw, y, h = 1240, 106, 118, 70
     nodes = [(n, t, m.replace('Claude ', ''), k) for n, t, w, m, d, o, k in FSTEPS] + [('→', 'We play it', 'Lionel & Owen', 'you')]
     gap = (W - 20 - len(nodes) * nw) / (len(nodes) - 1)
     X = [10 + i * (nw + gap) for i in range(len(nodes))]
     cx = lambda i: X[i] + nw / 2
     col = {'gate': '#ffd25c', 'outer': '#ffd25c', 'human': '#67e4f7', 'you': '#ffb23d', 'fix': 'rgba(255,255,255,.28)'}
-    out = ['<svg class="flowsvg" viewBox="0 0 %d 320" role="img" aria-label="The flow: plan, build, fix, verify, tests, polish, log, next. Verify loops back to fix until it approves; next loops back to plan until every milestone is done; then we read the build log and play it.">' % W,
+    out = ['<svg class="flowsvg" viewBox="0 0 %d 320" role="img" aria-label="The flow: plan, build, fix, verify, tests, polish, log, next, final review. Verify loops back to fix until it approves; next loops back to plan until every milestone is done; a final review checks the whole run; then we read it and play.">' % W,
            '<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="rgba(255,255,255,.45)"/></marker>'
            '<marker id="ay" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#ffd25c"/></marker>'
            '<linearGradient id="og" x1="0" x2="1"><stop offset="0" stop-color="#ffd25c"/><stop offset="1" stop-color="#ff8a3d"/></linearGradient></defs>']
@@ -340,12 +341,12 @@ def flow_svg():
     return ''.join(out)
 FLOWSVG = flow_svg()
 flow_sec = f'''    <section class="sec flowsec" id="flow"><div class="wrap">
-      <div class="head"><div><p class="eyebrow">[ <b>the flow</b> ] · built with overcli flows</p><h2>Eight steps, <em>two loops.</em></h2></div><p class="lede">A flow is a recipe overcli runs on its own, each step with its own model and tools. Ours goes round a few milestones at a time until the tests pass.</p></div>
+      <div class="head"><div><p class="eyebrow">[ <b>the flow</b> ] · built with overcli flows</p><h2>Nine steps, <em>two loops.</em></h2></div><p class="lede">A flow is a recipe overcli runs on its own, each step with its own model and tools. Ours goes round a few milestones at a time until the tests pass.</p></div>
       {FLOWSVG}
       <div class="runsin"><span class="mk"><svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke="#0d0f15" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9 L16 16 L9 23"/><path d="M18 23 H24"/></svg></span>
-        <div><p class="eyebrow" style="margin: 0 0 6px">[ <b>runs in overcli</b> ]</p><h3>One click from overcli’s flow library.</h3><p>In overcli, open Settings → Flows, pick <b>Build a game from a spec</b> from the public registry, and point it at a game’s spec. It runs on its own from the first milestone to the last, with no check-ins along the way: every step stays on your machine, nothing is committed or pushed, and when it’s done you review the whole run from its build log. Only a loop that runs out of rounds stops and waits for you.</p></div>
+        <div><p class="eyebrow" style="margin: 0 0 6px">[ <b>runs in overcli</b> ]</p><h3>One click from overcli’s flow library.</h3><p>In overcli, open Settings → Flows, pick <b>Build a game from a spec</b> from the public registry, and point it at a game’s spec. It runs on its own from the first milestone to the last, with no check-ins along the way: every step stays on your machine, nothing is committed or pushed, and when it’s done a final review checks the whole run and says what to try first. Only a loop that runs out of rounds stops and waits for you.</p></div>
         <div class="btns"><a class="btn btn-ink" href="{REGISTRY}" target="_blank" rel="noopener">Get the flow ↗</a><a class="btn btn-line" href="{OVERCLI}" target="_blank" rel="noopener">Meet overcli ↗</a></div></div>
-      <ol class="flowmap">{fsteps}<li class="fstep you"><span class="fn">→</span><b>We play it</b><span class="who">Lionel &amp; Owen · on an iPhone</span><p>We read the build log, then tilt, touch, two phones on the Wi-Fi, how it feels. Then the next spec change.</p></li></ol>
+      <ol class="flowmap">{fsteps}<li class="fstep you"><span class="fn">→</span><b>We play it</b><span class="who">Lionel &amp; Owen · on an iPhone</span><p>We read the final review, then tilt, touch, two phones on the Wi-Fi, how it feels. Then the next spec change.</p></li></ol>
       <ul class="runs">{runs}</ul>
     </div></section>
 '''
