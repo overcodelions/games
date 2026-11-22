@@ -238,6 +238,20 @@ h1 em, h2 em { font-style: normal; background: linear-gradient(95deg, var(--g), 
 .foot a:hover { color: var(--ink); }
 .foot span { display: inline-flex; gap: 14px; align-items: center; flex-wrap: wrap; }
 
+/* ── support and privacy pages ── */
+.doc-hero { padding-bottom: clamp(24px, 3vw, 40px); }
+.doc-hero .wrap { grid-template-columns: minmax(0, 1fr); }
+.doc-hero .lede { max-width: 760px; }
+.doc-hero .lede a { color: var(--g); text-decoration: underline; text-underline-offset: 3px; }
+.doc-hero h1 { font-size: clamp(44px, 6vw, 80px); }
+.doc { max-width: 760px; display: flex; flex-direction: column; gap: clamp(32px, 4vw, 48px); }
+.doc h2 { font-size: clamp(24px, 2.4vw, 30px); margin-bottom: 12px; }
+.doc p { margin: 0 0 12px; font-size: 17px; line-height: 1.65; color: var(--dim); }
+.doc p:last-child { margin-bottom: 0; }
+.doc b { color: var(--ink); font-weight: 600; }
+.doc a { color: var(--g); text-decoration: underline; text-underline-offset: 3px; }
+.doc a:hover { color: var(--ink); }
+
 /* ── narrower screens ── */
 @media (max-width: 1040px) {
   .hero .wrap, .row, .head, .band { grid-template-columns: minmax(0, 1fr); }

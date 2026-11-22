@@ -115,7 +115,7 @@ def page(path, title, desc, cls, current, body):
   </main>
   <footer class="foot"><div class="wrap">
     <span><b style="font-family: 'Bricolage Grotesque'; font-size: 15px; color: var(--ink)">codelions games lab</b> · made by <a href="https://github.com/lionelfarr" target="_blank" rel="noopener">Lionel</a> &amp; <a href="https://github.com/owenlfarr" target="_blank" rel="noopener">Owen</a> Farr</span>
-    <span>{built(up)}<a href="https://overcodelions.com/" target="_blank" rel="noopener">our dev tools ↗</a></span>
+    <span><a href="{up}support/">Support</a><a href="{up}privacy/">Privacy</a>{built(up)}<a href="https://overcodelions.com/" target="_blank" rel="noopener">our dev tools ↗</a></span>
   </div></footer>
 </body>
 </html>
@@ -285,7 +285,7 @@ FSTEPS = [('01', 'Plan', 'Architect', 'Claude Fable 5.2', 'Reads the spec and th
           ('03', 'Fix', 'Builder', 'Claude Sonnet 5.5', 'Compiles, runs the tests, fixes what fails — or what verify sent back.', 'diff', 'fix'),
           ('04', 'Verify', 'Lead', 'Claude Opus 5.5', 'Batch-mode compile, Build All and every test, a bot plays, screenshots checked.', 'verify.md', 'gate'),
           ('05', 'Tests', 'Builder', 'Claude Sonnet 5.5', 'Extends the tests for what was just built, and runs them.', 'tests_report.md', ''),
-          ('06', 'Polish', 'Architect', 'Claude Fable 5.2', 'A clean-up that must not change how it plays. One of us checks in first.', 'polish_report.md', 'human'),
+          ('06', 'Polish', 'Architect', 'Claude Fable 5.2', 'A clean-up that must not change how it plays, re-checked by compiling and testing.', 'polish_report.md', ''),
           ('07', 'Log', 'Lead', 'Claude Opus 5.5', 'Updates spec/BUILD_LOG.md: what passed, and what nobody has tried.', 'BUILD_LOG.md', ''),
           ('08', 'Next', 'Lead', 'Claude Opus 5.5', 'All the milestones done? If not, round again for the next batch.', 'next.md', 'outer')]
 BADGE = {'gate': '<span class="fgate">↺ back to Fix until approved</span>', 'outer': '<span class="fgate">↺ back to Plan until done</span>', 'human': '<span class="fgate human">✋ we check in first</span>'}
@@ -302,7 +302,7 @@ def flow_svg():
     X = [10 + i * (nw + gap) for i in range(len(nodes))]
     cx = lambda i: X[i] + nw / 2
     col = {'gate': '#ffd25c', 'outer': '#ffd25c', 'human': '#67e4f7', 'you': '#ffb23d', 'fix': 'rgba(255,255,255,.28)'}
-    out = ['<svg class="flowsvg" viewBox="0 0 %d 320" role="img" aria-label="The flow: plan, build, fix, verify, tests, polish, log, next. Verify loops back to fix until it approves; next loops back to plan until every milestone is done; we check in before polish; then we play it.">' % W,
+    out = ['<svg class="flowsvg" viewBox="0 0 %d 320" role="img" aria-label="The flow: plan, build, fix, verify, tests, polish, log, next. Verify loops back to fix until it approves; next loops back to plan until every milestone is done; then we read the build log and play it.">' % W,
            '<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="rgba(255,255,255,.45)"/></marker>'
            '<marker id="ay" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#ffd25c"/></marker>'
            '<linearGradient id="og" x1="0" x2="1"><stop offset="0" stop-color="#ffd25c"/><stop offset="1" stop-color="#ff8a3d"/></linearGradient></defs>']
@@ -320,14 +320,10 @@ def flow_svg():
     # forward arrows
     for i in range(len(nodes) - 1):
         x1, x2 = X[i] + nw + 2, X[i + 1] - 3
-        if i == li - 1:
-            out.append(f'<line x1="{x1:.0f}" y1="{y+h/2}" x2="{x2:.0f}" y2="{y+h/2}" stroke="#67e4f7" stroke-width="2" stroke-dasharray="3 4" marker-end="url(#ah)"/>')
-        elif i == ni:
+        if i == ni:
             out.append(f'<line x1="{x1:.0f}" y1="{y+h/2}" x2="{x2:.0f}" y2="{y+h/2}" stroke="#8fe56e" stroke-width="2" marker-end="url(#ah)"/><text class="tiny" x="{(x1+x2)/2:.0f}" y="{y-8}" text-anchor="middle" fill="#8fe56e">done ✓</text>')
         else:
             out.append(f'<line x1="{x1:.0f}" y1="{y+h/2}" x2="{x2:.0f}" y2="{y+h/2}" stroke="rgba(255,255,255,.3)" stroke-width="2" marker-end="url(#ah)"/>')
-    # check-in marker on polish
-    out.append(f'<g><rect x="{cx(li)-78:.0f}" y="{y-44}" width="156" height="24" rx="12" fill="rgba(103,228,247,.14)" stroke="rgba(103,228,247,.5)"/><text class="tiny" x="{cx(li):.0f}" y="{y-28}" text-anchor="middle" fill="#67e4f7">✋ we check in first</text><line x1="{cx(li):.0f}" y1="{y-20}" x2="{cx(li):.0f}" y2="{y-2}" stroke="#67e4f7" stroke-width="1.5" stroke-dasharray="2 3"/></g>')
     for i, (n, t, m, k) in enumerate(nodes):
         st = col.get(k, 'rgba(255,255,255,.14)')
         fill = 'url(#youg)' if k == 'you' else '#11142b'
@@ -347,9 +343,9 @@ flow_sec = f'''    <section class="sec flowsec" id="flow"><div class="wrap">
       <div class="head"><div><p class="eyebrow">[ <b>the flow</b> ] · built with overcli flows</p><h2>Eight steps, <em>two loops.</em></h2></div><p class="lede">A flow is a recipe overcli runs on its own, each step with its own model and tools. Ours goes round a few milestones at a time until the tests pass.</p></div>
       {FLOWSVG}
       <div class="runsin"><span class="mk"><svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke="#0d0f15" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9 L16 16 L9 23"/><path d="M18 23 H24"/></svg></span>
-        <div><p class="eyebrow" style="margin: 0 0 6px">[ <b>runs in overcli</b> ]</p><h3>One click from overcli’s flow library.</h3><p>In overcli, open Settings → Flows, pick <b>Build a game from a spec</b> from the public registry, and point it at a game’s spec. It runs on its own between check-ins: every step stays on your machine, nothing is committed or pushed, and a loop that runs out of rounds stops and waits for you.</p></div>
+        <div><p class="eyebrow" style="margin: 0 0 6px">[ <b>runs in overcli</b> ]</p><h3>One click from overcli’s flow library.</h3><p>In overcli, open Settings → Flows, pick <b>Build a game from a spec</b> from the public registry, and point it at a game’s spec. It runs on its own from the first milestone to the last, with no check-ins along the way: every step stays on your machine, nothing is committed or pushed, and when it’s done you review the whole run from its build log. Only a loop that runs out of rounds stops and waits for you.</p></div>
         <div class="btns"><a class="btn btn-ink" href="{REGISTRY}" target="_blank" rel="noopener">Get the flow ↗</a><a class="btn btn-line" href="{OVERCLI}" target="_blank" rel="noopener">Meet overcli ↗</a></div></div>
-      <ol class="flowmap">{fsteps}<li class="fstep you"><span class="fn">→</span><b>We play it</b><span class="who">Lionel &amp; Owen · on an iPhone</span><p>Tilt, touch, two phones on the Wi-Fi, how it feels. Then the next spec change.</p></li></ol>
+      <ol class="flowmap">{fsteps}<li class="fstep you"><span class="fn">→</span><b>We play it</b><span class="who">Lionel &amp; Owen · on an iPhone</span><p>We read the build log, then tilt, touch, two phones on the Wi-Fi, how it feels. Then the next spec change.</p></li></ol>
       <ul class="runs">{runs}</ul>
     </div></section>
 '''
@@ -371,4 +367,46 @@ how = f'''    <section class="hero"><div class="wrap">
 {flow_sec}{band('../', 'overcli puts Claude Code, Codex and the other agent CLIs in one window, then lets them work in long sessions, review each other and run in loops. It’s how these games get built — and it’s free and open source.')}
 '''
 page('how-we-build', 'How we build — Codelions Games Lab', 'How a father and son build iPhone games with a spec, Unity’s tests and overcli.', '', 'how-we-build/', how)
+
+# ── Support and Privacy (linked from the App Store listings) ────────────
+COMPANY = 'Codelions LLC'
+CONTACT = 'assistant@codelionsllc.com'
+MAIL = f'<a href="mailto:{CONTACT}">{CONTACT}</a>'
+UPDATED = 'November 22, 2026'
+GAME_NAMES = 'Crater, Puttnik and Glidegang'
+
+
+def doc(eyebrow, h1, lede, sections):
+    secs = ''.join(f'<section><h2>{h}</h2>{b}</section>' for h, b in sections)
+    return f'''    <section class="hero doc-hero"><div class="wrap">
+      <div class="hero-copy"><p class="eyebrow">[ <b>{eyebrow}</b> ]</p><h1>{h1}</h1><p class="lede">{lede}</p></div>
+    </div></section>
+    <section class="sec"><div class="wrap"><div class="doc">{secs}</div></div></section>
+'''
+
+
+support = doc('support', 'Need a <em>hand?</em>',
+              f'Help with {GAME_NAMES}. Email us at {MAIL} and a real person — Lionel or Owen — will get back to you.',
+              [('Contact', f'<p>Email {MAIL}. Tell us which game, which iPhone and iOS version, and what happened. A screenshot helps.</p><p>Testing a TestFlight build? You can also send feedback from the TestFlight app: take a screenshot in the game and tap <b>Share Beta Feedback</b>.</p>'),
+               ('Purchases and Remove Ads', '<p>Purchases are handled by Apple. If something you bought is missing — coins, a starter pack, or Remove Ads — open the game’s <b>Shop</b> and tap <b>Restore Purchases</b>, signed in with the same Apple Account you bought it with.</p><p>For refunds, use <a href="https://reportaproblem.apple.com" target="_blank" rel="noopener">reportaproblem.apple.com</a>. Apple handles all refunds; we can’t issue them ourselves.</p>'),
+               ('Playing online', '<p>Online play, leaderboards and achievements use Apple’s Game Center. If online play doesn’t start, check that you’re signed in under <b>Settings → Game Center</b> on your iPhone, then reopen the game.</p>'),
+               ('Playing on the same Wi-Fi', '<p>Party and same-Wi-Fi games need permission to find nearby phones. If friends can’t see each other, go to <b>Settings → Privacy &amp; Security → Local Network</b> and turn the game on. Everyone must be on the same Wi-Fi network.</p>'),
+               ('Ads', '<p>The games show optional rewarded ads (you choose to watch them for a bonus) and occasional full-screen ads between games, never during play. Buying <b>Remove Ads</b> turns off the full-screen ads.</p>'),
+               ('Your data and progress', '<p>Your progress is saved on your iPhone. We don’t have accounts, so there’s nothing for us to look up or reset. Deleting the game deletes its saved progress. See our <a href="../privacy/">privacy policy</a> for the details.</p>')])
+page('support', 'Support — Codelions Games Lab', f'Help with {GAME_NAMES}: contact, purchases, online play and privacy.', '', 'support/', support)
+
+privacy = doc('privacy', 'Privacy <em>policy.</em>',
+              f'How {GAME_NAMES} handle your information. Short version: we don’t run accounts or collect your personal information ourselves. The ads in the games come from Google, and online play goes through Apple.',
+              [('Who we are', f'<p>The games are made by {COMPANY} (“we”). Questions about this policy: {MAIL}.</p><p class="meta">Last updated {UPDATED}. This policy covers {GAME_NAMES} for iPhone and this website.</p>'),
+               ('What stays on your iPhone', '<p>Your progress, coins, unlocked items, settings, the holes and courses you build, and your best scores are saved only on your device. We don’t receive them. Deleting a game deletes its saved data.</p><p>Share codes and QR codes for holes and courses contain only the hole or course itself, nothing about you.</p>'),
+               ('What we collect', '<p>We don’t ask for your name, email, location or contacts, we don’t have accounts, and we don’t run our own analytics in the games. If you email us, we use your email only to reply.</p>'),
+               ('Advertising (Google AdMob)', '<p>The games show ads served by Google AdMob. To show and measure ads, Google may collect information from your device, such as its advertising identifier, IP address and approximate location derived from it, and how you interact with ads, plus diagnostic data. Google uses this under its own policies: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy</a> and <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">how Google uses information from apps that use its services</a>.</p><p>iOS asks your permission before the advertising identifier can be used for tracking. If you choose <b>Ask App Not to Track</b>, you’ll still see ads, but they won’t be personalized using that identifier. You can change this any time in <b>Settings → Privacy &amp; Security → Tracking</b>. Where the law requires it (for example in the EU and UK), the game asks for your consent before personalized ads are shown.</p><p>Buying <b>Remove Ads</b> stops full-screen ads.</p>'),
+               ('Game Center (Apple)', '<p>Online matches, leaderboards and achievements use Apple’s Game Center. When you play online, Apple shares your Game Center nickname and scores with the other players and on leaderboards. Apple handles this under the <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">Apple Privacy Policy</a>; we don’t receive your Apple Account details.</p>'),
+               ('Same-Wi-Fi play', '<p>Party and same-Wi-Fi games talk directly between phones on your local network. Nothing is sent to us or to the internet.</p>'),
+               ('Purchases (Apple)', '<p>In-app purchases are processed by Apple. We never see your payment details; the game only learns which items you own.</p>'),
+               ('Children', '<p>The games are made for a general audience. We don’t knowingly collect personal information from children. If you believe a child has sent us personal information, email us and we’ll delete it.</p>'),
+               ('Your choices', f'<p>You can turn off tracking for ads in iOS settings, reset your advertising identifier, buy Remove Ads, play offline, or delete a game to erase its data. For anything else, email {MAIL}.</p>'),
+               ('This website', '<p>This site is a plain static website hosted on GitHub Pages. It sets no cookies and runs no analytics or ads of its own. GitHub may log basic technical information, such as IP addresses, to run and secure the service: see the <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">GitHub Privacy Statement</a>.</p>'),
+               ('Changes', '<p>If we change this policy, we’ll update it here and change the date above.</p>')])
+page('privacy', 'Privacy policy — Codelions Games Lab', f'How {GAME_NAMES} handle your information.', '', 'privacy/', privacy)
 print('pages written')
