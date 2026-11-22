@@ -115,7 +115,7 @@ def page(path, title, desc, cls, current, body):
   </main>
   <footer class="foot"><div class="wrap">
     <span><b style="font-family: 'Bricolage Grotesque'; font-size: 15px; color: var(--ink)">codelions games lab</b> · made by <a href="https://github.com/lionelfarr" target="_blank" rel="noopener">Lionel</a> &amp; <a href="https://github.com/owenlfarr" target="_blank" rel="noopener">Owen</a> Farr</span>
-    <span>{built(up)}<a href="https://overcodelions.com/" target="_blank" rel="noopener">our dev tools ↗</a></span>
+    <span><a href="{up}support/">Support</a><a href="{up}privacy/">Privacy</a>{built(up)}<a href="https://overcodelions.com/" target="_blank" rel="noopener">our dev tools ↗</a></span>
   </div></footer>
 </body>
 </html>
@@ -285,9 +285,10 @@ FSTEPS = [('01', 'Plan', 'Architect', 'Claude Fable 5.2', 'Reads the spec and th
           ('03', 'Fix', 'Builder', 'Claude Sonnet 5.5', 'Compiles, runs the tests, fixes what fails — or what verify sent back.', 'diff', 'fix'),
           ('04', 'Verify', 'Lead', 'Claude Opus 5.5', 'Batch-mode compile, Build All and every test, a bot plays, screenshots checked.', 'verify.md', 'gate'),
           ('05', 'Tests', 'Builder', 'Claude Sonnet 5.5', 'Extends the tests for what was just built, and runs them.', 'tests_report.md', ''),
-          ('06', 'Polish', 'Architect', 'Claude Fable 5.2', 'A clean-up that must not change how it plays. One of us checks in first.', 'polish_report.md', 'human'),
+          ('06', 'Polish', 'Architect', 'Claude Fable 5.2', 'A clean-up that must not change how it plays, re-checked by compiling and testing.', 'polish_report.md', ''),
           ('07', 'Log', 'Lead', 'Claude Opus 5.5', 'Updates spec/BUILD_LOG.md: what passed, and what nobody has tried.', 'BUILD_LOG.md', ''),
-          ('08', 'Next', 'Lead', 'Claude Opus 5.5', 'All the milestones done? If not, round again for the next batch.', 'next.md', 'outer')]
+          ('08', 'Next', 'Lead', 'Claude Opus 5.5', 'All the milestones done? If not, round again for the next batch.', 'next.md', 'outer'),
+          ('09', 'Final review', 'Architect', 'Claude Fable 5.2', 'Once, at the end: the whole run checked against the spec, and a list of what to try first on a phone.', 'FINAL_REVIEW.md', '')]
 BADGE = {'gate': '<span class="fgate">↺ back to Fix until approved</span>', 'outer': '<span class="fgate">↺ back to Plan until done</span>', 'human': '<span class="fgate human">✋ we check in first</span>'}
 fsteps = ''.join(f'<li class="fstep {k}"><span class="fn">{n}</span><b>{t}</b><span class="who">{w} · {m}</span><p>{d}</p><code>→ {o}</code>' + BADGE.get(k, '') + '</li>' for n, t, w, m, d, o, k in FSTEPS)
 RUNS = [('crater', 'Crater', 'Plan → Build → Review → Tests → Polish', 'One overnight run. Review sent the build back once; then tests, then a polish pass.'),
@@ -296,60 +297,63 @@ RUNS = [('crater', 'Crater', 'Plan → Build → Review → Tests → Polish', '
 runs = ''.join(f'<li class="{g}"><img src="../assets/{ICON[g]}" alt="" /><span><b>{n}</b><code>{f}</code><span>{t}</span></span></li>' for g, n, f, t in RUNS)
 
 def flow_svg():
-    W, nw, y, h = 1240, 116, 118, 70
-    nodes = [(n, t, m.replace('Claude ', ''), k) for n, t, w, m, d, o, k in FSTEPS] + [('→', 'We play it', 'Lionel & Owen', 'you')]
-    gap = (W - 20 - len(nodes) * nw) / (len(nodes) - 1)
-    X = [10 + i * (nw + gap) for i in range(len(nodes))]
+    # Two groups: the eight steps that repeat for every batch, and the final review that runs once at the end.
+    # "We play it" lives in the step cards below, so the diagram stays uncrowded.
+    nw, h, y, g, G, pad = 112, 70, 120, 22, 64, 26
+    steps = [(n, t, m.replace('Claude ', ''), k) for n, t, w, m, d, o, k in FSTEPS]
+    X = [pad + i * (nw + g) for i in range(8)]
+    X.append(X[7] + nw + G)
+    W = X[8] + nw + pad
     cx = lambda i: X[i] + nw / 2
-    col = {'gate': '#ffd25c', 'outer': '#ffd25c', 'human': '#67e4f7', 'you': '#ffb23d', 'fix': 'rgba(255,255,255,.28)'}
-    out = ['<svg class="flowsvg" viewBox="0 0 %d 320" role="img" aria-label="The flow: plan, build, fix, verify, tests, polish, log, next. Verify loops back to fix until it approves; next loops back to plan until every milestone is done; we check in before polish; then we play it.">' % W,
+    out = ['<svg class="flowsvg" viewBox="0 0 %d 330" role="img" aria-label="The flow: plan, build, fix, verify, tests, polish, log and next repeat for each batch of milestones. Verify loops back to fix until it approves; next loops back to plan until every milestone is done. Then a final review checks the whole run, once, before we play it.">' % W,
            '<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="rgba(255,255,255,.45)"/></marker>'
            '<marker id="ay" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#ffd25c"/></marker>'
            '<linearGradient id="og" x1="0" x2="1"><stop offset="0" stop-color="#ffd25c"/><stop offset="1" stop-color="#ff8a3d"/></linearGradient></defs>']
-    # loops first, under the nodes
-    vi, fi, ni, pi, li = 3, 2, 7, 0, 5
-    inner = f'M{cx(vi)-14:.0f} {y} C{cx(vi)-14:.0f} {y-92}, {cx(fi)+14:.0f} {y-92}, {cx(fi)+14:.0f} {y}'
-    outer = f'M{cx(ni):.0f} {y+h} C{cx(ni):.0f} {y+h+120}, {cx(pi):.0f} {y+h+120}, {cx(pi):.0f} {y+h}'
+    # the two groups, as quiet panels with a label each
+    lt, lb = y - 34, y + h + 18
+    for x0, x1, label, colr in [(X[0] - 14, X[7] + nw + 14, 'each batch · until the spec is done', '#8784a6'), (X[8] - 14, X[8] + nw + 14, 'once, at the end', '#8fe56e')]:
+        out.append(f'<rect x="{x0:.0f}" y="{lt}" width="{x1 - x0:.0f}" height="{lb - lt}" rx="18" fill="rgba(255,255,255,.025)" stroke="rgba(255,255,255,.07)"/>'
+                   f'<text class="tiny" x="{x0 + 14:.0f}" y="{lt + 18}" fill="{colr}">{label}</text>')
+    # loops: fix ⇄ verify above, next → plan below
+    vi, fi, ni, pi = 3, 2, 7, 0
+    inner = f'M{cx(vi)-14:.0f} {y} C{cx(vi)-14:.0f} {y-96}, {cx(fi)+14:.0f} {y-96}, {cx(fi)+14:.0f} {y}'
+    outer = f'M{cx(ni):.0f} {y+h} C{cx(ni):.0f} {y+h+124}, {cx(pi):.0f} {y+h+124}, {cx(pi):.0f} {y+h}'
     out.append(f'<path class="arc" d="{inner}" fill="none" stroke="#ffd25c" stroke-width="2.2" marker-end="url(#ay)"/>')
     out.append(f'<path class="arc slow" d="{outer}" fill="none" stroke="url(#og)" stroke-width="2.2" marker-end="url(#ay)"/>')
     out.append(f'<circle r="5" fill="#ffd25c"><animateMotion dur="2.6s" repeatCount="indefinite" path="{inner}"/></circle>')
     out.append(f'<circle r="5.5" fill="#ff8a3d"><animateMotion dur="7s" repeatCount="indefinite" path="{outer}"/></circle>')
-    mid = (cx(vi) + cx(fi)) / 2
-    out.append(f'<text class="lbl" x="{mid:.0f}" y="{y-78}" text-anchor="middle" fill="#ffd25c">↺ back to Fix until verify approves</text>')
-    out.append(f'<text class="lbl" x="{(cx(ni)+cx(pi))/2:.0f}" y="{y+h+106}" text-anchor="middle" fill="#ffb27a">↺ round again for the next batch of milestones, until the spec is done</text>')
-    # forward arrows
-    for i in range(len(nodes) - 1):
-        x1, x2 = X[i] + nw + 2, X[i + 1] - 3
-        if i == li - 1:
-            out.append(f'<line x1="{x1:.0f}" y1="{y+h/2}" x2="{x2:.0f}" y2="{y+h/2}" stroke="#67e4f7" stroke-width="2" stroke-dasharray="3 4" marker-end="url(#ah)"/>')
-        elif i == ni:
-            out.append(f'<line x1="{x1:.0f}" y1="{y+h/2}" x2="{x2:.0f}" y2="{y+h/2}" stroke="#8fe56e" stroke-width="2" marker-end="url(#ah)"/><text class="tiny" x="{(x1+x2)/2:.0f}" y="{y-8}" text-anchor="middle" fill="#8fe56e">done ✓</text>')
+    out.append(f'<text class="lbl" x="{(cx(vi) + cx(fi)) / 2:.0f}" y="{y-80}" text-anchor="middle" fill="#ffd25c">↺ back to Fix until verify approves</text>')
+    out.append(f'<text class="lbl" x="{(cx(ni) + cx(pi)) / 2:.0f}" y="{y+h+112}" text-anchor="middle" fill="#ffb27a">↺ round again for the next batch of milestones</text>')
+    # forward arrows; the one out of the batch group says the run is done
+    for i in range(8):
+        x1, x2 = X[i] + nw + 3, X[i + 1] - 4
+        if i == ni:
+            out.append(f'<line x1="{x1:.0f}" y1="{y+h/2}" x2="{x2:.0f}" y2="{y+h/2}" stroke="#8fe56e" stroke-width="2" marker-end="url(#ah)"/><text class="tiny" x="{(x1+x2)/2:.0f}" y="{y+h/2-9}" text-anchor="middle" fill="#8fe56e">done ✓</text>')
         else:
             out.append(f'<line x1="{x1:.0f}" y1="{y+h/2}" x2="{x2:.0f}" y2="{y+h/2}" stroke="rgba(255,255,255,.3)" stroke-width="2" marker-end="url(#ah)"/>')
-    # check-in marker on polish
-    out.append(f'<g><rect x="{cx(li)-78:.0f}" y="{y-44}" width="156" height="24" rx="12" fill="rgba(103,228,247,.14)" stroke="rgba(103,228,247,.5)"/><text class="tiny" x="{cx(li):.0f}" y="{y-28}" text-anchor="middle" fill="#67e4f7">✋ we check in first</text><line x1="{cx(li):.0f}" y1="{y-20}" x2="{cx(li):.0f}" y2="{y-2}" stroke="#67e4f7" stroke-width="1.5" stroke-dasharray="2 3"/></g>')
-    for i, (n, t, m, k) in enumerate(nodes):
-        st = col.get(k, 'rgba(255,255,255,.14)')
-        fill = 'url(#youg)' if k == 'you' else '#11142b'
+    for i, (n, t, m, k) in enumerate(steps):
+        st = {'gate': '#ffd25c', 'outer': '#ffd25c', 'fix': 'rgba(255,255,255,.28)'}.get(k, 'rgba(255,255,255,.14)')
+        if i == 8:
+            st = 'rgba(143,229,110,.55)'
         dash = ' stroke-dasharray="5 4"' if k == 'fix' else ''
-        bg = 'rgba(255,178,61,.13)' if k == 'you' else '#11142b'
-        glow = {'gate': '#ffd25c', 'outer': '#ffd25c', 'human': '#67e4f7', 'you': '#ffb23d'}.get(k, '#a9b3ff')
-        out.append(f'<rect class="node" style="--i:{i};--c:{glow};--bg:{bg}" x="{X[i]:.0f}" y="{y}" width="{nw}" height="{h}" rx="14" fill="{bg}" stroke="{st}" stroke-width="1.4"{dash}/>'
+        glow = {'gate': '#ffd25c', 'outer': '#ffd25c'}.get(k, '#8fe56e' if i == 8 else '#a9b3ff')
+        fit = f' textLength="{nw-24}" lengthAdjust="spacingAndGlyphs"' if len(t) > 10 else ''
+        out.append(f'<rect class="node" style="--i:{i};--c:{glow};--bg:#11142b" x="{X[i]:.0f}" y="{y}" width="{nw}" height="{h}" rx="14" fill="#11142b" stroke="{st}" stroke-width="1.4"{dash}/>'
                    f'<text class="num" x="{X[i]+12:.0f}" y="{y+19}" fill="#ffd25c">{n}</text>'
-                   f'<text class="nm" x="{X[i]+12:.0f}" y="{y+42}" fill="#f3f1ff">{t}</text>'
+                   f'<text class="nm" x="{X[i]+12:.0f}" y="{y+42}" fill="#f3f1ff"{fit}>{t}</text>'
                    f'<text class="mdl" x="{X[i]+12:.0f}" y="{y+59}" fill="#8f8cad">{m}</text>')
-    run = f'M{cx(0):.0f} {y+h/2} L{cx(len(nodes)-1):.0f} {y+h/2}'
+    run = f'M{cx(0):.0f} {y+h/2} L{cx(8):.0f} {y+h/2}'
     out.append(f'<circle class="token" r="6" fill="#fff"><animateMotion dur="8.1s" repeatCount="indefinite" calcMode="linear" keyTimes="0;0.889;1" keyPoints="0;1;1" path="{run}"/></circle>')
     out.append('</svg>')
     return ''.join(out)
 FLOWSVG = flow_svg()
 flow_sec = f'''    <section class="sec flowsec" id="flow"><div class="wrap">
-      <div class="head"><div><p class="eyebrow">[ <b>the flow</b> ] · built with overcli flows</p><h2>Eight steps, <em>two loops.</em></h2></div><p class="lede">A flow is a recipe overcli runs on its own, each step with its own model and tools. Ours goes round a few milestones at a time until the tests pass.</p></div>
+      <div class="head"><div><p class="eyebrow">[ <b>the flow</b> ] · built with overcli flows</p><h2>Nine steps, <em>two loops.</em></h2></div><p class="lede">A flow is a recipe overcli runs on its own, each step with its own model and tools. Ours goes round a few milestones at a time until the tests pass.</p></div>
       {FLOWSVG}
       <div class="runsin"><span class="mk"><svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke="#0d0f15" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9 L16 16 L9 23"/><path d="M18 23 H24"/></svg></span>
-        <div><p class="eyebrow" style="margin: 0 0 6px">[ <b>runs in overcli</b> ]</p><h3>One click from overcli’s flow library.</h3><p>In overcli, open Settings → Flows, pick <b>Build a game from a spec</b> from the public registry, and point it at a game’s spec. It runs on its own between check-ins: every step stays on your machine, nothing is committed or pushed, and a loop that runs out of rounds stops and waits for you.</p></div>
+        <div><p class="eyebrow" style="margin: 0 0 6px">[ <b>runs in overcli</b> ]</p><h3>One click from overcli’s flow library.</h3><p>In overcli, open Settings → Flows, pick <b>Build a game from a spec</b> from the public registry, and point it at a game’s spec. It runs on its own from the first milestone to the last, with no check-ins along the way: every step stays on your machine, nothing is committed or pushed, and when it’s done a final review checks the whole run and says what to try first. Only a loop that runs out of rounds stops and waits for you.</p></div>
         <div class="btns"><a class="btn btn-ink" href="{REGISTRY}" target="_blank" rel="noopener">Get the flow ↗</a><a class="btn btn-line" href="{OVERCLI}" target="_blank" rel="noopener">Meet overcli ↗</a></div></div>
-      <ol class="flowmap">{fsteps}<li class="fstep you"><span class="fn">→</span><b>We play it</b><span class="who">Lionel &amp; Owen · on an iPhone</span><p>Tilt, touch, two phones on the Wi-Fi, how it feels. Then the next spec change.</p></li></ol>
+      <ol class="flowmap">{fsteps}<li class="fstep you"><span class="fn">→</span><b>We play it</b><span class="who">Lionel &amp; Owen · on an iPhone</span><p>We read the final review, then tilt, touch, two phones on the Wi-Fi, how it feels. Then the next spec change.</p></li></ol>
       <ul class="runs">{runs}</ul>
     </div></section>
 '''
