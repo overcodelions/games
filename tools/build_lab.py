@@ -175,7 +175,7 @@ now = [('crater', 'Crater', 'Playable: random themed islands, four modes, a shop
        ('glidegang', 'Glidegang', 'All twelve milestones built in one session, with 60 tests passing — and now racing on a real iPhone.', 'next · <b>Party on Wi-Fi, then online</b>')]
 board = ''.join(f'<a class="{g}" href="{g}/"><span class="who">' + (f'<img src="assets/{ICON[g]}" alt="" />' if ICON[g] else '<span class="ph"></span>') + f'{n}<span class="live sm"><i></i>Testing</span></span><span class="now">{t}</span><span class="next">{x}</span><span class="arr">→</span></a>' for g, n, t, x in now)
 home = f'''    <section class="hero"><div class="wrap">
-      <div class="hero-copy"><p class="eyebrow">[ <b>games lab</b> ] · a father and son, making games</p>
+      <div class="hero-copy"><p class="eyebrow">[ <b>games lab</b> ] · three iPhone games, in the lab</p>
         {STATUS}<h1>Small games,<br><em>big physics.</em></h1>
         <p class="lede">Three iPhone games we’re building together, from the first spec to the App Store. Every shot, putt and dive runs on physics we wrote ourselves — so a good player reads the world instead of just reacting to it.</p>
         <div class="btns"><a class="btn btn-ink" href="#games">Meet the games ↓</a><a class="btn btn-line" href="how-we-build/">How we build</a></div>
@@ -201,7 +201,7 @@ home = f'''    <section class="hero"><div class="wrap">
     </div></section>
 {band('', 'Every game here is built with overcli flows, in the agent desktop app we make: one model plans each milestone, another builds it, and a third checks it with Unity’s own tests before we ever pick up a phone.')}
 '''
-page('', 'Codelions Games Lab — small games, big physics', 'Crater, Puttnik and Glidegang: three iPhone games a father and son are building. Built with overcli.', '', '', home)
+page('', 'Codelions Games Lab — small games, big physics', 'Crater, Puttnik and Glidegang: three iPhone games, built with overcli.', '', '', home)
 
 # ── Crater ──────────────────────────────────────────────────────────────
 crater = f'''{game_hero('crater', '../', 'real-time artillery', 'Every shot <em>reshapes the island.</em>', 'Tanks sit on a big island split by mountains. Lob shells high over the ridges or blast straight through them — every hit changes the ground, and the ground fights back.', ['iPhone · landscape', '1–4 players', 'real time'], 'on an iPhone · a desert island, Rain loaded, 2:32 left')}
@@ -358,7 +358,7 @@ flow_sec = f'''    <section class="sec flowsec" id="flow"><div class="wrap">
     </div></section>
 '''
 how = f'''    <section class="hero"><div class="wrap">
-      <div class="hero-copy"><p class="eyebrow">[ <b>how we build</b> ]</p><h1>A father, a son, <em>and overcli.</em></h1>
+      <div class="hero-copy"><p class="eyebrow">[ <b>how we build</b> ]</p><h1>Built with overcli, <em>played by us.</em></h1>
         <p class="lede">We design the games together. overcli — the agent desktop app we also make — builds them with a flow: one model plans, another builds, a third checks the work with Unity’s own tests. <a href="#flow" style="color: var(--ink)">See the flow ↓</a> Then we pick up a phone and play.</p>
         <div class="btns"><a class="btn btn-ink" href="{OVERCLI}" target="_blank" rel="noopener">Meet overcli ↗</a><a class="btn btn-line" href="../">All the games</a></div></div>
       <div class="phone" style="--g: #ffb23d"><span class="scene" style="aspect-ratio: auto; background: #0b0d1c; padding: clamp(18px, 2.4vw, 30px); display: flex; flex-direction: column; gap: 9px; font: 400 clamp(11px, 1vw, 13.5px)/1.5 'Geist Mono', monospace">{logs}</span></div>
@@ -374,47 +374,5 @@ how = f'''    <section class="hero"><div class="wrap">
     </div></section>
 {flow_sec}{band('../', 'overcli puts Claude Code, Codex and the other agent CLIs in one window, then lets them work in long sessions, review each other and run in loops. It’s how these games get built — and it’s free and open source.')}
 '''
-page('how-we-build', 'How we build — Codelions Games Lab', 'How a father and son build iPhone games with a spec, Unity’s tests and overcli.', '', 'how-we-build/', how)
-
-# ── Support and Privacy (linked from the App Store listings) ────────────
-COMPANY = 'Codelions LLC'
-CONTACT = 'assistant@codelionsllc.com'
-MAIL = f'<a href="mailto:{CONTACT}">{CONTACT}</a>'
-UPDATED = 'November 22, 2026'
-GAME_NAMES = 'Crater, Puttnik and Glidegang'
-
-
-def doc(eyebrow, h1, lede, sections):
-    secs = ''.join(f'<section><h2>{h}</h2>{b}</section>' for h, b in sections)
-    return f'''    <section class="hero doc-hero"><div class="wrap">
-      <div class="hero-copy"><p class="eyebrow">[ <b>{eyebrow}</b> ]</p><h1>{h1}</h1><p class="lede">{lede}</p></div>
-    </div></section>
-    <section class="sec"><div class="wrap"><div class="doc">{secs}</div></div></section>
-'''
-
-
-support = doc('support', 'Need a <em>hand?</em>',
-              f'Help with {GAME_NAMES}. Email us at {MAIL} and a real person — Lionel or Owen — will get back to you.',
-              [('Contact', f'<p>Email {MAIL}. Tell us which game, which iPhone and iOS version, and what happened. A screenshot helps.</p><p>Testing a TestFlight build? You can also send feedback from the TestFlight app: take a screenshot in the game and tap <b>Share Beta Feedback</b>.</p>'),
-               ('Purchases and Remove Ads', '<p>Purchases are handled by Apple. If something you bought is missing — coins, a starter pack, or Remove Ads — open the game’s <b>Shop</b> and tap <b>Restore Purchases</b>, signed in with the same Apple Account you bought it with.</p><p>For refunds, use <a href="https://reportaproblem.apple.com" target="_blank" rel="noopener">reportaproblem.apple.com</a>. Apple handles all refunds; we can’t issue them ourselves.</p>'),
-               ('Playing online', '<p>Online play, leaderboards and achievements use Apple’s Game Center. If online play doesn’t start, check that you’re signed in under <b>Settings → Game Center</b> on your iPhone, then reopen the game.</p>'),
-               ('Playing on the same Wi-Fi', '<p>Party and same-Wi-Fi games need permission to find nearby phones. If friends can’t see each other, go to <b>Settings → Privacy &amp; Security → Local Network</b> and turn the game on. Everyone must be on the same Wi-Fi network.</p>'),
-               ('Ads', '<p>The games show optional rewarded ads (you choose to watch them for a bonus) and occasional full-screen ads between games, never during play. Buying <b>Remove Ads</b> turns off the full-screen ads.</p>'),
-               ('Your data and progress', '<p>Your progress is saved on your iPhone. We don’t have accounts, so there’s nothing for us to look up or reset. Deleting the game deletes its saved progress. See our <a href="../privacy/">privacy policy</a> for the details.</p>')])
-page('support', 'Support — Codelions Games Lab', f'Help with {GAME_NAMES}: contact, purchases, online play and privacy.', '', 'support/', support)
-
-privacy = doc('privacy', 'Privacy <em>policy.</em>',
-              f'How {GAME_NAMES} handle your information. Short version: we don’t run accounts or collect your personal information ourselves. The ads in the games come from Google, and online play goes through Apple.',
-              [('Who we are', f'<p>The games are made by {COMPANY} (“we”). Questions about this policy: {MAIL}.</p><p class="meta">Last updated {UPDATED}. This policy covers {GAME_NAMES} for iPhone and this website.</p>'),
-               ('What stays on your iPhone', '<p>Your progress, coins, unlocked items, settings, the holes and courses you build, and your best scores are saved only on your device. We don’t receive them. Deleting a game deletes its saved data.</p><p>Share codes and QR codes for holes and courses contain only the hole or course itself, nothing about you.</p>'),
-               ('What we collect', '<p>We don’t ask for your name, email, location or contacts, we don’t have accounts, and we don’t run our own analytics in the games. If you email us, we use your email only to reply.</p>'),
-               ('Advertising (Google AdMob)', '<p>The games show ads served by Google AdMob. To show and measure ads, Google may collect information from your device, such as its advertising identifier, IP address and approximate location derived from it, and how you interact with ads, plus diagnostic data. Google uses this under its own policies: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy</a> and <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">how Google uses information from apps that use its services</a>.</p><p>iOS asks your permission before the advertising identifier can be used for tracking. If you choose <b>Ask App Not to Track</b>, you’ll still see ads, but they won’t be personalized using that identifier. You can change this any time in <b>Settings → Privacy &amp; Security → Tracking</b>. Where the law requires it (for example in the EU and UK), the game asks for your consent before personalized ads are shown.</p><p>Buying <b>Remove Ads</b> stops full-screen ads.</p>'),
-               ('Game Center (Apple)', '<p>Online matches, leaderboards and achievements use Apple’s Game Center. When you play online, Apple shares your Game Center nickname and scores with the other players and on leaderboards. Apple handles this under the <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">Apple Privacy Policy</a>; we don’t receive your Apple Account details.</p>'),
-               ('Same-Wi-Fi play', '<p>Party and same-Wi-Fi games talk directly between phones on your local network. Nothing is sent to us or to the internet.</p>'),
-               ('Purchases (Apple)', '<p>In-app purchases are processed by Apple. We never see your payment details; the game only learns which items you own.</p>'),
-               ('Children', '<p>The games are made for a general audience. We don’t knowingly collect personal information from children. If you believe a child has sent us personal information, email us and we’ll delete it.</p>'),
-               ('Your choices', f'<p>You can turn off tracking for ads in iOS settings, reset your advertising identifier, buy Remove Ads, play offline, or delete a game to erase its data. For anything else, email {MAIL}.</p>'),
-               ('This website', '<p>This site is a plain static website hosted on GitHub Pages. It sets no cookies and runs no analytics or ads of its own. GitHub may log basic technical information, such as IP addresses, to run and secure the service: see the <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">GitHub Privacy Statement</a>.</p>'),
-               ('Changes', '<p>If we change this policy, we’ll update it here and change the date above.</p>')])
-page('privacy', 'Privacy policy — Codelions Games Lab', f'How {GAME_NAMES} handle your information.', '', 'privacy/', privacy)
+page('how-we-build', 'How we build — Codelions Games Lab', 'How we build iPhone games with a spec, Unity’s tests and an overcli flow.', '', 'how-we-build/', how)
 print('pages written')
