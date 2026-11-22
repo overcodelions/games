@@ -175,7 +175,7 @@ now = [('crater', 'Crater', 'Playable: random themed islands, four modes, a shop
        ('glidegang', 'Glidegang', 'All twelve milestones built in one session, with 60 tests passing — and now racing on a real iPhone.', 'next · <b>Party on Wi-Fi, then online</b>')]
 board = ''.join(f'<a class="{g}" href="{g}/"><span class="who">' + (f'<img src="assets/{ICON[g]}" alt="" />' if ICON[g] else '<span class="ph"></span>') + f'{n}<span class="live sm"><i></i>Testing</span></span><span class="now">{t}</span><span class="next">{x}</span><span class="arr">→</span></a>' for g, n, t, x in now)
 home = f'''    <section class="hero"><div class="wrap">
-      <div class="hero-copy"><p class="eyebrow">[ <b>games lab</b> ] · a father and son, making games</p>
+      <div class="hero-copy"><p class="eyebrow">[ <b>games lab</b> ] · three iPhone games, in the lab</p>
         {STATUS}<h1>Small games,<br><em>big physics.</em></h1>
         <p class="lede">Three iPhone games we’re building together, from the first spec to the App Store. Every shot, putt and dive runs on physics we wrote ourselves — so a good player reads the world instead of just reacting to it.</p>
         <div class="btns"><a class="btn btn-ink" href="#games">Meet the games ↓</a><a class="btn btn-line" href="how-we-build/">How we build</a></div>
@@ -201,7 +201,7 @@ home = f'''    <section class="hero"><div class="wrap">
     </div></section>
 {band('', 'Every game here is built with overcli flows, in the agent desktop app we make: one model plans each milestone, another builds it, and a third checks it with Unity’s own tests before we ever pick up a phone.')}
 '''
-page('', 'Codelions Games Lab — small games, big physics', 'Crater, Puttnik and Glidegang: three iPhone games a father and son are building. Built with overcli.', '', '', home)
+page('', 'Codelions Games Lab — small games, big physics', 'Crater, Puttnik and Glidegang: three iPhone games, built with overcli.', '', '', home)
 
 # ── Crater ──────────────────────────────────────────────────────────────
 crater = f'''{game_hero('crater', '../', 'real-time artillery', 'Every shot <em>reshapes the island.</em>', 'Tanks sit on a big island split by mountains. Lob shells high over the ridges or blast straight through them — every hit changes the ground, and the ground fights back.', ['iPhone · landscape', '1–4 players', 'real time'], 'on an iPhone · a desert island, Rain loaded, 2:32 left')}
@@ -354,7 +354,7 @@ flow_sec = f'''    <section class="sec flowsec" id="flow"><div class="wrap">
     </div></section>
 '''
 how = f'''    <section class="hero"><div class="wrap">
-      <div class="hero-copy"><p class="eyebrow">[ <b>how we build</b> ]</p><h1>A father, a son, <em>and overcli.</em></h1>
+      <div class="hero-copy"><p class="eyebrow">[ <b>how we build</b> ]</p><h1>Built with overcli, <em>played by us.</em></h1>
         <p class="lede">We design the games together. overcli — the agent desktop app we also make — builds them with a flow: one model plans, another builds, a third checks the work with Unity’s own tests. <a href="#flow" style="color: var(--ink)">See the flow ↓</a> Then we pick up a phone and play.</p>
         <div class="btns"><a class="btn btn-ink" href="{OVERCLI}" target="_blank" rel="noopener">Meet overcli ↗</a><a class="btn btn-line" href="../">All the games</a></div></div>
       <div class="phone" style="--g: #ffb23d"><span class="scene" style="aspect-ratio: auto; background: #0b0d1c; padding: clamp(18px, 2.4vw, 30px); display: flex; flex-direction: column; gap: 9px; font: 400 clamp(11px, 1vw, 13.5px)/1.5 'Geist Mono', monospace">{logs}</span></div>
@@ -370,5 +370,5 @@ how = f'''    <section class="hero"><div class="wrap">
     </div></section>
 {flow_sec}{band('../', 'overcli puts Claude Code, Codex and the other agent CLIs in one window, then lets them work in long sessions, review each other and run in loops. It’s how these games get built — and it’s free and open source.')}
 '''
-page('how-we-build', 'How we build — Codelions Games Lab', 'How a father and son build iPhone games with a spec, Unity’s tests and overcli.', '', 'how-we-build/', how)
+page('how-we-build', 'How we build — Codelions Games Lab', 'How we build iPhone games with a spec, Unity’s tests and an overcli flow.', '', 'how-we-build/', how)
 print('pages written')
