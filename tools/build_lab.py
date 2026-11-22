@@ -333,7 +333,8 @@ def flow_svg():
         glow = {'gate': '#ffd25c', 'outer': '#ffd25c', 'human': '#67e4f7', 'you': '#ffb23d'}.get(k, '#a9b3ff')
         out.append(f'<rect class="node" style="--i:{i};--c:{glow};--bg:{bg}" x="{X[i]:.0f}" y="{y}" width="{nw}" height="{h}" rx="14" fill="{bg}" stroke="{st}" stroke-width="1.4"{dash}/>'
                    f'<text class="num" x="{X[i]+12:.0f}" y="{y+19}" fill="#ffd25c">{n}</text>'
-                   f'<text class="nm" x="{X[i]+12:.0f}" y="{y+42}" fill="#f3f1ff">{t}</text>'
+                   # long names ("Final review") are squeezed to fit inside the box instead of running into the next arrow
+                   f'<text class="nm" x="{X[i]+12:.0f}" y="{y+42}" fill="#f3f1ff"' + (f' textLength="{nw-22}" lengthAdjust="spacingAndGlyphs"' if len(t) > 10 else '') + f'>{t}</text>'
                    f'<text class="mdl" x="{X[i]+12:.0f}" y="{y+59}" fill="#8f8cad">{m}</text>')
     run = f'M{cx(0):.0f} {y+h/2} L{cx(len(nodes)-1):.0f} {y+h/2}'
     out.append(f'<circle class="token" r="6" fill="#fff"><animateMotion dur="8.1s" repeatCount="indefinite" calcMode="linear" keyTimes="0;0.889;1" keyPoints="0;1;1" path="{run}"/></circle>')
