@@ -351,3 +351,29 @@ h1 em, h2 em { font-style: normal; background: linear-gradient(95deg, var(--g), 
 .runsin .btns { flex-wrap: nowrap; }
 @media (max-width: 1040px) { .runsin { grid-template-columns: auto minmax(0, 1fr); } .runsin .btns { grid-column: 1 / -1; flex-wrap: wrap; } }
 @media (max-width: 720px) { .runsin { grid-template-columns: 1fr; padding: 20px; } }
+
+/* ── Huddy, the fourth game ─────────────────────────────────────── */
+.huddy { --g: #8f9dff; --g2: #ffc83d; }
+.games { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.fan a { width: 56%; }
+.fan a:nth-child(1) { left: 0; top: 10%; }
+.fan a:nth-child(2) { left: 22%; top: 0; }
+.fan a:nth-child(3) { right: 0; top: 22%; }
+.fan a:nth-child(4) { left: 12%; top: 46%; transform: rotate(-3deg); z-index: 4; }
+.trio img { display: block; width: 100%; border-radius: 26px; border: 1px solid var(--line); box-shadow: 0 50px 90px -40px rgba(0, 0, 0, .9); }
+.shots.portrait { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.shots.portrait img { aspect-ratio: 780 / 1688; }
+.runs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 1200px) { .games, .runs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 720px) { .games, .runs { grid-template-columns: 1fr; } .shots.portrait { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.card-foot { gap: 12px; }
+.card-foot .chip, .card-foot .go { white-space: nowrap; }
+.shots.portrait.six { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; }
+.shots.portrait.pair { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 420px; margin-top: 28px; }
+@media (max-width: 1040px) { .shots.portrait.six { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 720px) { .shots.portrait.six { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ── TestFlight status: the blue of the TestFlight icon, not the lab's yellow ── */
+.live { background: linear-gradient(135deg, #5cc8ff, #1a7cf5); color: #fff; box-shadow: 0 6px 18px -8px rgba(26, 124, 245, .8); }
+.live i { background: #fff; }
+.status { border-color: rgba(92, 170, 255, .4); background: rgba(26, 124, 245, .1); color: #d3e6ff; }

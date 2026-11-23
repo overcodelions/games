@@ -5,8 +5,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OVERCLI = 'https://overcodelions.com/overcli/'
 CLI = '<svg width="{s}" height="{s}" viewBox="0 0 32 32" fill="none" stroke="#0d0f15" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9 L16 16 L9 23"/><path d="M18 23 H24"/></svg>'
 LAB = '<svg width="16" height="16" viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9 L16 16 L9 23"/><circle cx="22.5" cy="22" r="2.6" fill="#ffd25c" stroke="none"/></svg>'
-GAMES = [('crater', 'Crater', '#ff8a3d'), ('puttnik', 'Puttnik', '#67e4f7'), ('glidegang', 'Glidegang', '#f8b53f')]
-ICON = {'crater': 'crater-icon.png','puttnik': 'puttnik-icon.png', 'glidegang': 'glidegang-icon.png'}
+GAMES = [('crater', 'Crater', '#ff8a3d'), ('puttnik', 'Puttnik', '#67e4f7'), ('glidegang', 'Glidegang', '#f8b53f'), ('huddy', 'Huddy', '#8f9dff')]
+LIVE = {}
+ICON = {'crater': 'crater-icon.png','puttnik': 'puttnik-icon.png', 'glidegang': 'glidegang-icon.png', 'huddy': 'huddy-icon.png'}
 
 
 def built(up):
@@ -75,14 +76,18 @@ def scene_glidegang_shot():
     return '<img class="cover still" src="{up}assets/glidegang-vents.jpg" alt="Glidegang on an iPhone: Volcano Vents, gliding over a lava river toward the next gate" />'
 
 
-SCENES = {'crater': scene_crater, 'puttnik': scene_puttnik_shot, 'glidegang': scene_glidegang_shot}
+def scene_huddy():
+    return '<img class="cover still" src="{up}assets/huddy-trio.jpg" alt="Huddy on an iPhone: picking Imposter topics, the home screen and a Window Hunt race" />'
+
+
+SCENES = {'crater': scene_crater, 'puttnik': scene_puttnik_shot, 'glidegang': scene_glidegang_shot, 'huddy': scene_huddy}
 
 
 def scene(game, up):
     return f'<span class="scene">{SCENES[game]().replace("{up}", up)}</span>'
 
 
-STATUS = '<p class="status"><span class="live"><i></i>Testing now</span><span>on our own iPhones · TestFlight next · then the App Store</span></p>'
+STATUS = '<p class="status"><span class="live"><i></i>On TestFlight</span><span>all four games · the App Store next</span></p>'
 
 # ── page frame ──────────────────────────────────────────────────────────
 def page(path, title, desc, cls, current, body):
@@ -160,48 +165,50 @@ def game_hero(game, up, eyebrow, h1, lede, chip_items, note):
 
 
 # ── the lab ─────────────────────────────────────────────────────────────
-fan = ''.join(f'<a class="{g}" href="{g}/">{scene(g, "")}<span class="tag">{n}</span><span class="live badge sm"><i></i>Testing</span></a>' for g, n, c in GAMES)
+fan = ''.join(f'<a class="{g}" href="{g}/">{scene(g, "")}<span class="tag">{n}</span><span class="live badge sm"><i></i>{LIVE.get(g, "TestFlight")}</span></a>' for g, n, c in GAMES)
 cards = ''
 blurbs = {
     'crater': ('Artillery · 1–4 players', 'Real-time tanks on an island split by mountains. Lob shells over the ridges, or blast straight through them: every hit reshapes the ground.'),
     'puttnik': ('Mini golf · 1–8 players', 'Flick a glowing ball off a planet and let gravity take over. It curves around moons, slingshots past gas giants and skims black holes.'),
+    'huddy': ('Party games · 2–8 players', 'Seven quick games for a car full of people, with no internet at all — Imposter, Blackout, Which Sport? and more, on one phone or with everyone’s phones linked, at a table or in the car.'),
     'glidegang': ('Glider racing · 8 racers', 'Eight pilots dive off a cliff through canyons and sea stacks, ride updrafts, steal slipstreams and bump each other into rock walls.')}
 for g, n, c in GAMES:
     icon = f'<img src="assets/{ICON[g]}" alt="" />' if ICON[g] else '<span class="ph"></span>'
     kind, text = blurbs[g]
-    cards += f'<a class="card {g}" href="{g}/"><span class="pic">{scene(g, "")}<span class="live badge"><i></i>Testing now</span></span><span class="card-body"><span class="card-top">{icon}<span><span class="meta">{kind}</span><h3>{n}</h3></span></span><p>{text}</p><span class="card-foot"><span class="chip lab"><i></i>coming soon to the App Store</span><span class="go">Look inside →</span></span></span></a>'
-now = [('crater', 'Crater', 'Playable: random themed islands, four modes, a shop, and same-Wi-Fi multiplayer.', 'next · <b>online play on Game Center</b>'),
+    cards += f'<a class="card {g}" href="{g}/"><span class="pic">{scene(g, "")}<span class="live badge"><i></i>{LIVE.get(g, "On TestFlight")}</span></span><span class="card-body"><span class="card-top">{icon}<span><span class="meta">{kind}</span><h3>{n}</h3></span></span><p>{text}</p><span class="card-foot"><span class="chip lab"><i></i>App Store · soon</span><span class="go">Look inside →</span></span></span></a>'
+now = [('huddy', 'Huddy', 'Seven games built by the published flow, 390 tests passing — and now on TestFlight.', 'next · <b>the App Store</b>'),
+       ('crater', 'Crater', 'Playable: random themed islands, four modes, a shop, and same-Wi-Fi multiplayer.', 'next · <b>online play on Game Center</b>'),
        ('puttnik', 'Puttnik', 'Four worlds, journey holes, a live hole clock, clubs and Quick Match are in.', 'next · <b>online play on Game Center</b>'),
        ('glidegang', 'Glidegang', 'All twelve milestones built in one session, with 60 tests passing — and now racing on a real iPhone.', 'next · <b>Party on Wi-Fi, then online</b>')]
-board = ''.join(f'<a class="{g}" href="{g}/"><span class="who">' + (f'<img src="assets/{ICON[g]}" alt="" />' if ICON[g] else '<span class="ph"></span>') + f'{n}<span class="live sm"><i></i>Testing</span></span><span class="now">{t}</span><span class="next">{x}</span><span class="arr">→</span></a>' for g, n, t, x in now)
+board = ''.join(f'<a class="{g}" href="{g}/"><span class="who">' + (f'<img src="assets/{ICON[g]}" alt="" />' if ICON[g] else '<span class="ph"></span>') + f'{n}<span class="live sm"><i></i>{LIVE.get(g, "TestFlight")}</span></span><span class="now">{t}</span><span class="next">{x}</span><span class="arr">→</span></a>' for g, n, t, x in now)
 home = f'''    <section class="hero"><div class="wrap">
-      <div class="hero-copy"><p class="eyebrow">[ <b>games lab</b> ] · three iPhone games, in the lab</p>
-        {STATUS}<h1>Small games,<br><em>big physics.</em></h1>
-        <p class="lede">Three iPhone games we’re building together, from the first spec to the App Store. Every shot, putt and dive runs on physics we wrote ourselves — so a good player reads the world instead of just reacting to it.</p>
+      <div class="hero-copy"><p class="eyebrow">[ <b>games lab</b> ] · four iPhone games, in the lab</p>
+        {STATUS}<h1>Small games,<br><em>played together.</em></h1>
+        <p class="lede">Four iPhone games we’re building together, from the first spec to the App Store. Three run on physics we wrote ourselves, so a good player reads the world; the fourth, Huddy, gets a whole car playing.</p>
         <div class="btns"><a class="btn btn-ink" href="#games">Meet the games ↓</a><a class="btn btn-line" href="how-we-build/">How we build</a></div>
-        {chips(['iPhone · landscape', 'play together', 'built with overcli'])}</div>
+        {chips(['iPhone', 'play together', 'built with overcli'])}</div>
       <div class="fan">{fan}</div>
     </div></section>
     <section class="sec" id="games"><div class="wrap">
-      <div class="head"><div><p class="eyebrow">[ <b>the games</b> ] · three in the lab</p><h2>Three games, <em>one family.</em></h2></div><p class="lede">They share an engine setup, conventions and code, so each new game starts from what the last one learned.</p></div>
+      <div class="head"><div><p class="eyebrow">[ <b>the games</b> ] · four in the lab</p><h2>Four games, <em>one family.</em></h2></div><p class="lede">They share an engine setup, conventions and code, so each new game starts from what the last one learned.</p></div>
       <div class="games">{cards}</div>
     </div></section>
     <section class="sec"><div class="wrap">
-      <div class="head"><div><p class="eyebrow">[ <b>in the lab</b> ] · where each one is</p><h2>Built in the open, <em>one milestone at a time.</em></h2></div><p class="lede">We’re testing all three on our own iPhones now, with TestFlight next and then the App Store. Here’s where each one stands, straight from the repo.</p></div>
+      <div class="head"><div><p class="eyebrow">[ <b>in the lab</b> ] · where each one is</p><h2>Built in the open, <em>one milestone at a time.</em></h2></div><p class="lede">All four are on TestFlight now, with the App Store next. Here’s where each one stands, straight from the repo.</p></div>
       <div class="board">{board}</div>
     </div></section>
     <section class="sec"><div class="wrap">
-      <div class="head"><div><p class="eyebrow">[ <b>what they share</b> ]</p><h2>Physics first.</h2></div><p class="lede">No off-the-shelf physics engine in any of them: each game’s world runs on rules we wrote, tuned until it feels right.</p></div>
+      <div class="head"><div><p class="eyebrow">[ <b>what they share</b> ]</p><h2>Physics first.</h2></div><p class="lede">No off-the-shelf physics engine in Crater, Puttnik or Glidegang: each game’s world runs on rules we wrote, tuned until it feels right.</p></div>
       {feats([('The world reacts', 'In Crater the ground is the weapon: craters work on any slope, ridges become passes, and steep ground slides away.'),
               ('The same on every phone', 'Puttnik runs each shot 240 times a second from the tee, the flick and the hole’s seed — so a shot replays exactly, anywhere.'),
               ('Air you can read', 'Glidegang flies on its own energy model: diving buys speed, climbing spends it, and updrafts are the only free height.'),
               ('Make your own', 'Puttnik’s Hole Lab and Glidegang’s Course Lab: build it, beat it at par or with a bot, then share it as a code or QR.'),
-              ('Play together', 'Game Center online, pass-and-play on one phone, or a whole room on the same Wi-Fi.'),
+              ('Play together', 'Game Center online, pass-and-play on one phone, a whole room on the same Wi-Fi — or, in Huddy, phones linked with no internet at all.'),
               ('Bots that play fair', 'Easy, Normal and Hard bots, tuned against a stand-in new player so a first race is winnable and a hard one isn’t.')])}
     </div></section>
 {band('', 'Every game here is built with overcli flows, in the agent desktop app we make: one model plans each milestone, another builds it, and a third checks it with Unity’s own tests before we ever pick up a phone.')}
 '''
-page('', 'Codelions Games Lab — small games, big physics', 'Crater, Puttnik and Glidegang: three iPhone games, built with overcli.', '', '', home)
+page('', 'Codelions Games Lab — small games, played together', 'Crater, Puttnik, Glidegang and Huddy: four iPhone games, built with overcli.', '', '', home)
 
 # ── Crater ──────────────────────────────────────────────────────────────
 crater = f'''{game_hero('crater', '../', 'real-time artillery', 'Every shot <em>reshapes the island.</em>', 'Tanks sit on a big island split by mountains. Lob shells high over the ridges or blast straight through them — every hit changes the ground, and the ground fights back.', ['iPhone · landscape', '1–4 players', 'real time'], 'on an iPhone · a desert island, Rain loaded, 2:32 left')}
@@ -274,6 +281,48 @@ glide = f'''{game_hero('glidegang', '../', 'glider racing', 'Eight gliders. <em>
 '''
 page('glidegang', 'Glidegang — eight gliders, one canyon', 'A chaotic glider racing game for iPhone, for 8 racers: canyons, updrafts, slipstreams and gust cannons. Built with overcli.', 'glidegang', 'glidegang/', glide)
 
+
+# ── Huddy ───────────────────────────────────────────────────────────────
+STATUS_NEW = '<p class="status"><span class="live"><i></i>Just built</span><span>not on a phone yet · then our iPhones · then TestFlight</span></p>'
+huddy = f'''    <section class="hero"><div class="wrap">
+      <div class="hero-copy"><p class="eyebrow">[ <b>huddy</b> ] · games for groups</p>{STATUS}<h1>Good company. <em>Great games.</em></h1><p class="lede">Seven quick party games for 2 to 8 people that work with no internet at all. Pass one phone round, or link everyone’s phones so each player plays on their own — easy round a table or across the seats of a car. Games fit the drive, the phone can read each turn aloud over the car’s Bluetooth, and trophies keep score all week. Made for the ride to soccer — and the lunch table.</p>{chips(['iPhone and iPad · portrait', '2–8 players · a phone each', 'fully offline'])}
+        <div class="btns"><a class="btn btn-ink" href="#how">How it plays ↓</a><a class="btn btn-line" href="../">All the games</a></div></div>
+      <div><div class="trio"><img src="../assets/huddy-trio.jpg" alt="Huddy on an iPhone: picking Imposter topics, the home screen and a Window Hunt race" /></div><p class="meta shot-note">on an iPhone · Imposter topics, home, and a Window Hunt race</p></div>
+    </div></section>
+    <section class="sec" style="padding-block: 0 clamp(64px, 8vw, 112px); border: 0"><div class="wrap">{strip([('7', 'quick games'), ('2–8', 'players, one phone or a phone each'), ('4,200+', 'prompts across 47 packs'), ('0', 'ads, subscriptions or internet needed')])}</div></section>
+    <section class="sec" id="how"><div class="wrap">
+      <div class="head"><div><p class="eyebrow">[ <b>how it plays</b> ]</p><h2>Seven games, <em>start with Imposter.</em></h2></div><p class="lede">Pick a game, or tap Surprise Me and let the drive length pick for you.</p></div>
+      {feats([('Imposter', 'One of you doesn’t know the word. Pick the topics — everyday things, food, cities, soccer clubs and stars — then find the bluffer. 3, 2, 1, point!'), ('Which Sport?', 'Soccer, football or basketball? A name comes up and you have six seconds. Be quick!'), ('Mystery Thing', 'Guess it in 20 questions — or let the phone think of one and answer you.'),
+              ('Hot Potato', 'Name it fast and pass it on, before the hidden fuse runs out.'), ('Window Hunt', 'Four games out the window — Plate Hunt, Road Bingo, Alphabet Signs and Colour Cars. Teams race to find it first, on the honour system.'), ('Who Knows Who', 'How well do you know each other? Secret picks stay hidden until the reveal.')])}
+    </div></section>
+    <section class="sec" style="padding-top: 0; border: 0"><div class="wrap">
+      <div class="shots portrait six"><figure><img src="../assets/huddy-home.jpg" alt="The Huddy home screen: Good company. Great games. Play, Pick a game, Link phones" /><figcaption>home · good company, great games</figcaption></figure><figure><img src="../assets/huddy-topics.jpg" alt="Imposter: pick your topics, from everyday words to soccer clubs and stars" /><figcaption>imposter · pick your topics</figcaption></figure><figure><img src="../assets/huddy-potato.jpg" alt="Hot Potato: every answer starts with D, say one and pass the phone before it buzzes" /><figcaption>hot potato · don’t hold it when it buzzes</figcaption></figure><figure><img src="../assets/huddy-hunt.jpg" alt="Window Hunt: Team 1 and Team 2 race to find the letter A" /><figcaption>window hunt · teams race for the letter A</figcaption></figure><figure><img src="../assets/huddy-trophies.jpg" alt="Trophies: Weekly Champ, Best Bluffer, Plate Collector, Potato Survivor and Mind Reader, plus stickers" /><figcaption>trophies · up for grabs all week</figcaption></figure><figure><img src="../assets/huddy-pass.jpg" alt="The Crew Pass: 7 games, 47 packs, 4,200+ prompts. One-time purchase, no ads, no subscription" /><figcaption>crew pass · one-time, no ads</figcaption></figure></div>
+      <p class="meta" style="margin-top: 18px">Screenshots from an iPhone, from the current build.</p>
+    </div></section>
+    <section class="sec"><div class="wrap row">
+      <div><p class="eyebrow">[ <b>blackout</b> ] · the newest game</p><h2>A town, a hidden gang, <em>and the lights go out.</em></h2><p class="body">A Shadow is hiding in Hollow Creek. Each night everyone makes a secret move; each day the town argues and locks somebody up. Lock up the Shadow before the Shadow takes the town. Four players on one phone, or four to eight with a phone each — and nobody gets hurt: players vanish or get locked up.</p><div class="shots portrait pair"><figure><img src="../assets/huddy-blackout-hidden.jpg" alt="Blackout: this card is for Dad. Hold to reveal, only Dad should look" /><figcaption>only Dad should look</figcaption></figure><figure><img src="../assets/huddy-blackout-card.jpg" alt="Blackout: Dad’s card is the Detective, who checks one player each night" /><figcaption>the detective · shadow or not?</figcaption></figure></div></div>
+      {lst([('Night', 'Everyone taps a secret move on their own phone, all at once, so nobody can tell who is doing what'), ('The Shadow', 'Picks one player to vanish · two Shadows with 7 or 8'), ('The Detective', 'Checks one player: Shadow or not?'), ('The Guard', 'With 6 or more, watches one door · if the Shadows come there, nobody vanishes'), ('Day', 'The town hears who vanished, argues, and votes someone to be locked up'), ('Who wins', 'The town, when every Shadow is locked up · the Shadows, when they match everyone else')])}
+    </div></section>
+    <section class="sec"><div class="wrap">
+      <div class="head"><div><p class="eyebrow">[ <b>a phone each</b> ] · at a table or in the car</p><h2>Link the phones, <em>everyone plays.</em></h2></div><p class="lede">Every game works on linked phones, so it’s easy to play round a table or across the seats of a car. One phone hosts, everyone else opens Huddy and joins the room, and secrets stay on each player’s own screen.</p></div>
+      {feats([('Join the room', 'The host starts a room and the other phones join it — straight from Home, nothing to set up.'), ('Secrets stay secret', 'Imposter words, Blackout roles and Who Knows Who picks only ever reach their own phone.'), ('Everyone at once', 'Answer together, fastest scores more; at night in Blackout, every move is made at the same moment.'),
+              ('Table or car', 'Phones link straight to each other, so it works round a lunch table or across the seats of a car with no internet. At home they can link over Wi-Fi too.'), ('No phone? No problem', 'A player without a phone plays on the host’s.'), ('Drop and rejoin', 'Lose a phone for a moment and it can rejoin the same seat within a minute.')])}
+    </div></section>
+    <section class="sec"><div class="wrap">
+      <div class="head"><div><p class="eyebrow">[ <b>made for the back seat</b> ]</p><h2>Eyes up, <em>everyone in.</em></h2></div><p class="lede">A six-year-old and a fourteen-year-old in the same game, with a parent playing from the front seat.</p></div>
+      {feats([('Aloud in the car', 'Over the car’s Bluetooth, the phone can read each turn aloud; at a lunch table it stays quiet. Big type, captions and Calm Motion are kind to car sickness.'), ('Driver-safe', 'The driver plays by voice. The first launch says it plainly: never hand the phone to the driver.'), ('Drive-sized', 'Pick a drive length and Surprise Me fills it. Tap We’ve Arrived to pause, and pick it up on the way home.'),
+              ('One Crew Pass', 'Every game in full, every pack, Home Mode and your own packs, for one price. No ads, no subscription, and it works on all your family’s devices.'), ('Home Mode', 'An iPad flat on the table: seats around the edges, and tilt it toward you to peek at your card.'), ('Trophies', 'Points add up across the week, with trophies like Best Bluffer and Potato Survivor.')])}
+    </div></section>
+    <section class="sec"><div class="wrap">
+      <div class="head"><div><p class="eyebrow">[ <b>lab notes</b> ] · from the build log</p><h2>Built by the flow, <em>then by us.</em></h2></div></div>
+      <div class="notes"><div class="note"><span class="meta">flow</span><p><b>Built by the published flow.</b> <a href="../how-we-build/#flow" style="color: var(--ink)">Build a game from a spec</a> took Huddy through all eleven milestones in five rounds.</p></div>
+      <div class="note"><span class="meta">tests</span><p><b>390 tests pass.</b> Huddy → Build All prints HUDDY BUILD OK and HUDDY TESTS: 390 passed, 0 failed.</p></div>
+      <div class="note"><span class="meta">now</span><p><b>On a real iPhone.</b> The screens above are from it. It’s on TestFlight now, with the App Store next.</p></div></div>
+    </div></section>
+{band('../', 'Huddy is the first game built start to finish by the published flow: five rounds of the same loop you can install from overcli’s flow library.')}
+'''
+page('huddy', 'Huddy — games for groups', 'Huddy: seven quick party games for 2 to 8 people, on one phone or a phone each, fully offline and made for the car. Built with overcli.', 'huddy', 'huddy/', huddy)
+
 # ── How we build ───────────────────────────────────────────────────────
 log = [('$', 'Glidegang → Build All', '#8784a6'), ('', 'GLIDEGANG BUILD OK', '#8fe56e'), ('', 'GLIDEGANG TESTS OK (60 passed)', '#8fe56e'), ('', 'bot finish · every course, no more than two crashes', '#8fe56e'),
        ('', 'played in batch mode · menu, hangar, Course Lab, five races, Ring Rush, Time Trial', '#b7b5d1'), ('', 'no game errors logged', '#b7b5d1'), ('!', 'not tried · a real iPhone, two phones on Wi-Fi, Game Center', '#ffd25c')]
@@ -293,7 +342,8 @@ BADGE = {'gate': '<span class="fgate">↺ back to Fix until approved</span>', 'o
 fsteps = ''.join(f'<li class="fstep {k}"><span class="fn">{n}</span><b>{t}</b><span class="who">{w} · {m}</span><p>{d}</p><code>→ {o}</code>' + BADGE.get(k, '') + '</li>' for n, t, w, m, d, o, k in FSTEPS)
 RUNS = [('crater', 'Crater', 'Plan → Build → Review → Tests → Polish', 'One overnight run. Review sent the build back once; then tests, then a polish pass.'),
         ('puttnik', 'Puttnik', 'Plan → Build → Verify', 'One unattended run. Verify sent the build back once, then approved it.'),
-        ('glidegang', 'Glidegang', 'One long session', 'All twelve milestones in a single unattended session, before the flow existed.')]
+        ('glidegang', 'Glidegang', 'One long session', 'All twelve milestones in a single unattended session, before the flow existed.'),
+        ('huddy', 'Huddy', 'Build a game from a spec', 'Five rounds of the published flow took it through all eleven milestones.')]
 runs = ''.join(f'<li class="{g}"><img src="../assets/{ICON[g]}" alt="" /><span><b>{n}</b><code>{f}</code><span>{t}</span></span></li>' for g, n, f, t in RUNS)
 
 def flow_svg():
